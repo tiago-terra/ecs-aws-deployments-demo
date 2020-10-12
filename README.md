@@ -12,3 +12,8 @@ Technical use case project aimed at demonstrating different deployment strategie
 - [AWS EKS](https://aws.amazon.com/eks/)
 - Docker
 - Terraform
+
+## Deployments
+
+- Blue/Green Deployment
+- Rolling Deployment

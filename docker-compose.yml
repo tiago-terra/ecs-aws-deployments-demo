@@ -1,0 +1,11 @@
+# @format
+
+version: "3.3"
+services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/usr/share/nginx/html
