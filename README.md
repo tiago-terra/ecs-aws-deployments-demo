@@ -6,8 +6,9 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 ## Tools used
 
-- [AWS CodeDeploy](https://aws.amazon.com/codedeploy/)
 - [AWS CodeCommit](https://aws.amazon.com/codecommit/)
+- [AWS CodeBuild](https://aws.amazon.com/codebuild/)
+- [AWS CodePipeline](https://aws.amazon.com/codepipeline/)
 - [AWS ECR](https://aws.amazon.com/ecr/)
 - [AWS EKS](https://aws.amazon.com/eks/)
 - Docker
