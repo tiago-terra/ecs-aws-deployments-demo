@@ -6,9 +6,9 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 ## Tools used
 
-- AWS CodeDeploy
-- AWS CodeCommit
-- AWS ECR
-- AWS EKS
+- [AWS CodeDeploy](https://aws.amazon.com/codedeploy/)
+- [AWS CodeCommit](https://aws.amazon.com/codecommit/)
+- [AWS ECR](https://aws.amazon.com/ecr/)
+- [AWS EKS](https://aws.amazon.com/eks/)
 - Docker
 - Terraform
