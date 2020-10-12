@@ -1,6 +1,6 @@
 resource "aws_codebuild_project" "deployment_project" {
   name          = var.project_name
-  build_timeout = var.build_timeout
+  build_timeout = "5"
   service_role  = var.role_arn
 
   artifacts {
