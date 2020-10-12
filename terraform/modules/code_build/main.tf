@@ -1,6 +1,5 @@
 resource "aws_codebuild_project" "deployment_project" {
   name          = var.project_name
-  description   = var.description
   build_timeout = var.build_timeout
   service_role  = var.role_arn
 
@@ -19,7 +18,6 @@ resource "aws_codebuild_project" "deployment_project" {
       value = "0.12.16"
     }
   }
-
 
   source {
     type      = "CODEPIPELINE"
