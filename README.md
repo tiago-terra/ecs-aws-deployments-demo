@@ -1,5 +1,3 @@
-<!-- @format -->
-
 # AWS Deployment Strategies Use Case
 
 Technical use case project aimed at demonstrating different deployment strategies within AWS.

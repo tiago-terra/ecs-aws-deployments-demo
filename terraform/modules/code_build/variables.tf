@@ -1,2 +1,5 @@
 variable "project_name" {}
-variable "role_arn" {}
+variable "service_role" {}
+variable "build_path" {
+    default = "modules/code_build/build"
+}

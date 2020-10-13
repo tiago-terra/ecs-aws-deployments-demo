@@ -1,2 +1,3 @@
 variable "region" {}
-variable "repo_name" {}
+variable "project_name" {}
+variable "public_key" {}
