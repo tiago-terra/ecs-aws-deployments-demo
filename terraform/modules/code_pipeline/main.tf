@@ -1,8 +1,8 @@
 resource "random_uuid" "deploy" {}
 
 # Build S3 bucket for CodePipeline artifact storage
-resource "aws_s3_bucket" "codepipeline_artifacts" {
-  bucket = "codepipeline-artifacts-${random_uuid.deploy.result}"
+resource "aws_s3_bucket" "artifacts" {
+  bucket = "artifacts-${random_uuid.deploy.result}"
   acl    = "private"
   force_destroy = true
   lifecycle {
@@ -26,7 +26,7 @@ resource "aws_codepipeline" "main" {
   role_arn = var.service_role.arn
 
   artifact_store {
-    location = aws_s3_bucket.codepipeline_artifacts.bucket
+    location = aws_s3_bucket.artifacts.bucket
     type     = "S3"
   }
 

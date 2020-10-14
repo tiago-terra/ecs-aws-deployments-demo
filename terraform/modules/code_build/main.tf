@@ -33,6 +33,5 @@ resource "aws_codebuild_project" "main" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "./${var.build_path}/buildspec.yml"
   }
 }

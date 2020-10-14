@@ -11,36 +11,41 @@ resource "aws_iam_user_ssh_key" "main" {
   public_key = var.public_key
 }
 
-# Attach managed policies to user
-resource "aws_iam_user_policy_attachment" "main" {
-  count      = length(var.policy_arns)
+resource "aws_iam_user_policy_attachment" "test-attach" {
+  count      = length(var.policies)
   user       = aws_iam_user.main.name
-  policy_arn = element(var.policy_arns, count.index)
+  policy_arn = element(var.policies, count.index)
 }
 
-data "aws_iam_policy_document" "role_policy" {
+# IAM Policy - Role
+data "aws_iam_policy_document" "assume_role" {
   statement {
     actions = ["sts:AssumeRole"]
-  principals {
-    type = "Service"
-    identifiers = [
-      "ecr.amazonaws.com",
-      "cloudwatch.amazonaws.com",
-      "codecommit.amazonaws.com",
-      "codebuild.amazonaws.com",
-      "codepipeline.amazonaws.com"
-      ]
+
+    principals {
+      type = "AWS"
+      identifiers = [aws_iam_user.main.arn]
+    }
+    principals {
+      type = "Service"
+      identifiers = var.services
     }
   }
 }
 
-# Creates service role
-resource "aws_iam_role" "codebuild" {
-  name = "codebuild_role"
-  assume_role_policy = data.aws_iam_policy_document.role_policy.json
+# IAM - Create Role
+resource "aws_iam_role" "main" {
+  name = "service_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
-# Create ECR Repo
+resource "aws_iam_role_policy_attachment" "role_policy" {
+  count      = length(var.policies)
+  role       = aws_iam_role.main.name
+  policy_arn = element(var.policies, count.index)
+}
+
+# ECR - Create repo
 resource "aws_ecr_repository" "main" {
   name                 = "ecr_${var.project_name}"
   image_tag_mutability = "MUTABLE"
