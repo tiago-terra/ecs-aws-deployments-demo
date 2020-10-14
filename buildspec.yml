@@ -16,7 +16,7 @@ phases:
     commands:
       - echo Building the Docker image...
       - cd docker && docker build -t $IMAGE_URI .
-  push:
+  post_build:
     commands:
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
       - echo Pushing the Docker image...
