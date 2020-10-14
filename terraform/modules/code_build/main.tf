@@ -16,9 +16,9 @@ resource "aws_codebuild_project" "main" {
 
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "nginx"
+    image                       = "aws/codebuild/standard:1.0"
     type                        = "LINUX_CONTAINER"
-    image_pull_credentials_type = "SERVICE_ROLE"
+    image_pull_credentials_type = "CODEBUILD"
   
     environment_variable {
       name = "ECR_REPO"
