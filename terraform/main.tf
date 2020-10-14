@@ -1,15 +1,6 @@
-# IAM User - retrieve user
-data "aws_iam_user" "main" {
-  user_name = var.user_name
-}
-# IAM Role - retrieve role
-data "aws_iam_role" "main" {
-  name = var.role_name
-}
-
 module "cloud_setup" {
   source = "./modules/cloud_setup"
-  
+
   public_key = var.public_key
   project_name = var.project_name
   user_name = data.aws_iam_user.main.user_name
