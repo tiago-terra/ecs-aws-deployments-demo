@@ -7,9 +7,16 @@ resource "aws_codebuild_project" "main" {
     type = "CODEPIPELINE"
   }
 
+  logs_config {
+    cloudwatch_logs {
+      group_name  = "log-group"
+      stream_name = "log-stream"
+    }
+  }
+
   environment {
+    image                       = "aws/codebuild/standard:4.0"
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:1.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
   
