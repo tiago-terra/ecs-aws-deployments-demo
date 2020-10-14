@@ -19,7 +19,13 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 ## Terraform
 
-### Remote State
+### PreReqs
+
+- Remote state configured
+- IAM user,role setup
+- IAM policies assigned
+
+#### Remote State
 
 - **S3 bucket** - to store the state
 - **DynamoDB** - to manage locks
@@ -27,3 +33,7 @@ Technical use case project aimed at demonstrating different deployment strategie
 #### Initialize remote state:
 
 `cd remote_state && terraform apply -auto-approve`
+
+#### Create IAM User/role/policies
+
+`cd `
