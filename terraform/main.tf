@@ -1,22 +1,33 @@
+# IAM User - retrieve user
+data "aws_iam_user" "main" {
+  user_name = var.user_name
+}
+# IAM Role - retrieve role
+data "aws_iam_role" "main" {
+  name = var.role_name
+}
+
 module "cloud_setup" {
   source = "./modules/cloud_setup"
-
+  
   public_key = var.public_key
   project_name = var.project_name
+  user_name = data.aws_iam_user.main.user_name
 }
 
 module "code_build" {
   source = "./modules/code_build"
 
   project_name = "codebuild-${var.project_name}"
-  service_role = module.cloud_setup.codebuild_role
+  role_arn = data.aws_iam_role.main.arn
   ecr_repo = module.cloud_setup.ecr_repo
 }
 
 module "code_pipeline" {
   source = "./modules/code_pipeline"
-
+  
+  artifacts_bucket = module.cloud_setup.artifacts_bucket
+  code_repo = module.cloud_setup.code_repo
   project_name = var.project_name
-  service_role = module.cloud_setup.codebuild_role
-  cloudcommit_repo = module.cloud_setup.codecommit_repo
-} 
+  role_arn = data.aws_iam_role.main.arn
+}

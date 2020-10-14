@@ -1,14 +1,7 @@
-resource "null_resource" "push_to_codecommit" {
-
-  provisioner "local-exec" {
-    command = "whoami && git push aws"
-  }
-}
-
 resource "aws_codebuild_project" "main" {
   name          = var.project_name
   build_timeout = "5"
-  service_role  = var.service_role.arn
+  service_role  = var.role_arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -33,6 +26,6 @@ resource "aws_codebuild_project" "main" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "terraform/buildspec.yml"
+    buildspec = "buildspec.yml"
   }
 }

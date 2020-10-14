@@ -1,32 +1,9 @@
-resource "random_uuid" "deploy" {}
-
-# Build S3 bucket for CodePipeline artifact storage
-resource "aws_s3_bucket" "artifacts" {
-  bucket = "artifacts-${random_uuid.deploy.result}"
-  acl    = "private"
-  force_destroy = true
-  lifecycle {
-    prevent_destroy = false
-  }
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
-
 resource "aws_codepipeline" "main" {
   name     = "pipeline_${var.project_name}"
-  role_arn = var.service_role.arn
+  role_arn = var.role_arn
 
   artifact_store {
-    location = aws_s3_bucket.artifacts.bucket
+    location = var.artifacts_bucket
     type     = "S3"
   }
 
@@ -81,5 +58,4 @@ resource "aws_codepipeline" "main" {
   #     }
   #   }
   # }
-
 }

@@ -1,12 +1,9 @@
-output "codebuild_role" {
-  value = aws_iam_role.main
+output "artifacts_bucket" {
+  value = aws_s3_bucket.artifacts.bucket
 }
-output "codecommit_repo" {
+output "code_repo" {
   value = aws_codecommit_repository.main
 }
 output "ecr_repo" {
   value = aws_ecr_repository.main
-}
-output "iam_user_arn" {
-  value = aws_iam_user.main.arn
 }
