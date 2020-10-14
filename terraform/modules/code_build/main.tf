@@ -1,7 +1,7 @@
 resource "null_resource" "push_to_codecommit" {
 
   provisioner "local-exec" {
-    command = "git push aws"
+    command = "whoami && git push aws"
   }
 }
 
@@ -33,6 +33,6 @@ resource "aws_codebuild_project" "main" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = ".terraform/buildspec.yml"
+    buildspec = "terraform/buildspec.yml"
   }
 }
