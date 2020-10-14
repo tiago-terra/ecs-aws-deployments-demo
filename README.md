@@ -16,3 +16,14 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 - Blue/Green Deployment
 - Rolling Deployment
+
+## Terraform
+
+### Remote State
+
+- **S3 bucket** - to store the state
+- **DynamoDB** - to manage locks
+
+#### Initialize remote state:
+
+`cd remote_state && terraform apply -auto-approve`

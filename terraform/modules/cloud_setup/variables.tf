@@ -6,3 +6,4 @@ variable "policy_arns" {
         "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"    
         ]
 }
+variable "project_name" {}

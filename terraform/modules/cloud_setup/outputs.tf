@@ -1,15 +1,12 @@
-output "codebuild_role_arn" {
-  value = aws_iam_role.codebuild.arn
+output "codebuild_role" {
+  value = aws_iam_role.codebuild
 }
-
-output "ecr_repo_url" {
+output "codecommit_repo" {
+  value = aws_codecommit_repository.main
+}
+output "ecr_repo" {
   value = aws_ecr_repository.main
 }
-
 output "iam_user_arn" {
   value = aws_iam_user.main.arn
-}
-
-output "ssh_key_id" {
-  value = aws_iam_user_ssh_key.main.ssh_public_key_id
 }
