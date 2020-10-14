@@ -42,20 +42,4 @@ resource "aws_codepipeline" "main" {
     }
   }
 
-  # stage {
-  #   name = "Deploy"
-
-  #   action {
-  #     name            = "Deploy Image to K8S"
-  #     category        = "Deploy"
-  #     owner           = "AWS"
-  #     provider        = "CodeBuild"
-  #     input_artifacts = ["SourceArtifact"]
-  #     version         = "1"
-
-  #     configuration = {
-  #       ProjectName = var.project_name
-  #     }
-  #   }
-  # }
 }
