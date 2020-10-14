@@ -1,16 +1,10 @@
-# This requires the following environment variables be set on the Project:
-# AWS_DEFAULT_REGION (Supplied by CodeBuild)
-# ECR_REPO
-# IMAGE_TAG
 version: 0.2
-
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      - CODEBUILD_RESOLVED_SOURCE_VERSION="${CODEBUILD_RESOLVED_SOURCE_VERSION:-$IMAGE_TAG}"
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-4)
       - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
   build:
     commands:

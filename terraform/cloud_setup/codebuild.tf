@@ -1,13 +1,8 @@
-locals {
-  stages = ["build","deploy"]
-}
-
-
 resource "aws_codebuild_project" "main" {
-  count         = length(local.stages)
-  name          = "${element(local.stages,count.index)}_project"
+  count         = length(var.stages)
+  name          = "${element(var.stages,count.index)}-project"
   build_timeout = "5"
-  service_role  = var.role_arn
+  service_role  = data.aws_iam_role.main.arn
 
   artifacts {
     type = "CODEPIPELINE"
@@ -29,17 +24,12 @@ resource "aws_codebuild_project" "main" {
   
     environment_variable {
       name = "ECR_REPO"
-      value = var.ecr_repo.repository_url
-    }
- 
-    environment_variable {
-      name = "IMAGE_TAG"
-      value = "web_container:latest"
+      value = aws_ecr_repository.main.repository_url
     }
   }
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "${element(local.stages,count.index)}spec.yml"
+    buildspec = "terraform/build/${element(var.stages,count.index)}spec.yml"
   }
 }

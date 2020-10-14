@@ -1,9 +1,20 @@
+# Build S3 bucket for CodePipeline artifact storage
+resource "aws_s3_bucket" "artifacts" {
+  bucket = "artifacts-${var.project_name}"
+  acl    = "private"
+  force_destroy = true
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 resource "aws_codepipeline" "main" {
-  name     = "pipeline_${var.project_name}"
-  role_arn = var.role_arn
+  name     = "pipeline-${var.project_name}"
+  role_arn = data.aws_iam_role.main.arn
 
   artifact_store {
-    location = var.artifacts_bucket
+    location = aws_s3_bucket.artifacts.bucket
     type     = "S3"
   }
 
@@ -19,7 +30,7 @@ resource "aws_codepipeline" "main" {
       output_artifacts = ["SourceArtifact"]
 
       configuration = {
-        RepositoryName = var.project_name
+        RepositoryName = aws_codecommit_repository.main.repository_name
         BranchName     = "master"
       }
     }
@@ -37,7 +48,7 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = "build_project"
+        ProjectName = "build-project"
       }
     }
   }

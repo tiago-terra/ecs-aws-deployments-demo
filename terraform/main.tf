@@ -1,23 +1,26 @@
+provider "aws" {
+    region  = var.region
+    profile ="default"
+}
+
+# Remote Backend
+terraform {
+  backend "s3" {
+    bucket         = "tf-remote-state-bucket-tiago"
+    key            = "global/s3/terraform.tfstate"
+    dynamodb_table = "terraform-up-and-running-locks"
+    region         = "eu-west-2"
+    encrypt        = true
+  }
+}
+
+
 module "cloud_setup" {
-  source = "./modules/cloud_setup"
+  source = "./cloud_setup"
 
   public_key = var.public_key
   project_name = var.project_name
-  user_name = data.aws_iam_user.main.user_name
-}
-
-module "code_build" {
-  source = "./modules/code_build"
-
-  role_arn = data.aws_iam_role.main.arn
-  ecr_repo = module.cloud_setup.ecr_repo
-}
-
-module "code_pipeline" {
-  source = "./modules/code_pipeline"
-  
-  artifacts_bucket = module.cloud_setup.artifacts_bucket
-  code_repo = module.cloud_setup.code_repo
-  project_name = var.project_name
-  role_arn = data.aws_iam_role.main.arn
+  role_name = var.role_name
+  user_name = var.user_name
+  region = var.region
 }
