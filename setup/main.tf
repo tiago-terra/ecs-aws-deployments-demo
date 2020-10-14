@@ -2,8 +2,30 @@ provider "aws" {
   region = "eu-west-2"
 }
 
+locals {
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
+    "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
+    "arn:aws:iam::aws:policy/AWSCodeCommitFullAccess",
+    "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess",
+    "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess",
+    "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+    "arn:aws:iam::aws:policy/AmazonEKSServicePolicy",
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+    ]
+  services = [
+    "eks.amazonaws.com",
+    "cloudwatch.amazonaws.com",
+    "codecommit.amazonaws.com",
+    "codebuild.amazonaws.com",
+    "codepipeline.amazonaws.com",
+    "s3.amazonaws.com"
+    ]
+}
+
 resource "aws_s3_bucket" "tf_state_bucket" {
-  bucket = "tf-remote-state-bucket-tiago"
+  bucket = var.tf_bucket
 
   versioning {
     enabled = true
@@ -19,7 +41,7 @@ resource "aws_s3_bucket" "tf_state_bucket" {
 }
 
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "terraform-up-and-running-locks"
+  name         = var.tf_lock_table
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {
@@ -30,14 +52,14 @@ resource "aws_dynamodb_table" "terraform_locks" {
 
 # IAM Operations
 resource "aws_iam_user" "main" {
-  name = "service_user"
+  name = var.service_user_name
   path = "/"
 }
 
 resource "aws_iam_user_policy_attachment" "user_attachment" {
-  count      = length(var.policies)
+  count      = length(local.policies)
   user       = aws_iam_user.main.name
-  policy_arn = element(var.policies, count.index)
+  policy_arn = element(local.policies, count.index)
 }
 
 # IAM Policy - Role
@@ -51,19 +73,19 @@ data "aws_iam_policy_document" "assume_role" {
     }
     principals {
       type = "Service"
-      identifiers = var.services
+      identifiers = local.services
     }
   }
 }
 
 # IAM - Create Role
 resource "aws_iam_role" "main" {
-  name = "service_role"
+  name = var.service_role_name
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
 resource "aws_iam_role_policy_attachment" "role_policy" {
-  count      = length(var.policies)
+  count      = length(local.policies)
   role       = aws_iam_role.main.name
-  policy_arn = element(var.policies, count.index)
+  policy_arn = element(local.policies, count.index)
 }

@@ -37,7 +37,7 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = "codebuild-${var.project_name}"
+        ProjectName = "build_project"
       }
     }
   }

@@ -1,8 +1,11 @@
+locals {
+  stages = ["build","deploy"]
+}
 
 
 resource "aws_codebuild_project" "main" {
-  count         = length(var.stage)
-  name          = "${var.stage}_project"
+  count         = length(local.stages)
+  name          = "${element(local.stages,count.index)}_project"
   build_timeout = "5"
   service_role  = var.role_arn
 
@@ -37,6 +40,6 @@ resource "aws_codebuild_project" "main" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "${element(var.stage,count.index)}spec.yml"
+    buildspec = "${element(local.stages,count.index)}spec.yml"
   }
 }

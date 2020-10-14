@@ -24,6 +24,3 @@ phases:
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
       - echo Pushing the Docker image...
       - docker push $IMAGE_URI
-      - printf '[{"name":"nginx","imageUri":"%s"}]' "$IMAGE_URI" > images.json
-artifacts:
-  files: images.json
