@@ -18,6 +18,7 @@ resource "aws_codebuild_project" "main" {
     image                       = "aws/codebuild/standard:4.0"
     compute_type                = "BUILD_GENERAL1_SMALL"
     type                        = "LINUX_CONTAINER"
+    privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
   
     environment_variable {
