@@ -1,3 +1,14 @@
+# Build S3 bucket for CodePipeline artifact storage
+resource "aws_s3_bucket" "artifacts" {
+  bucket = "artifacts-${var.project_name}"
+  acl    = "private"
+  force_destroy = true
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 resource "aws_codepipeline" "main" {
   name     = "build-${var.project_name}"
   role_arn = data.aws_iam_role.main.arn
