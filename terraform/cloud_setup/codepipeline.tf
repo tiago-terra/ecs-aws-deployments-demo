@@ -21,6 +21,7 @@ resource "aws_codepipeline" "main" {
       configuration = {
         RepositoryName = aws_codecommit_repository.main.repository_name
         BranchName     = "master"
+        PollForSourceChanges = false
       }
     }
   }
@@ -65,7 +66,8 @@ resource "aws_codepipeline" "rolling" {
 
       configuration = {
         RepositoryName = aws_codecommit_repository.main.repository_name
-        BranchName     = "feature/rolling"
+        BranchName     = "master"
+        PollForSourceChanges = false
       }
     }
   }
@@ -110,7 +112,8 @@ resource "aws_codepipeline" "bluegreen" {
 
       configuration = {
         RepositoryName = aws_codecommit_repository.main.repository_name
-        BranchName     = "feature/bluegreen"
+        BranchName     = "master"
+        PollForSourceChanges = false
       }
     }
   }

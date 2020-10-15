@@ -1,13 +1,15 @@
 version: 0.2
+
 phases:
   pre_build:
     commands:
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
+      - echo Logging in to Amazon ECR...
+      - docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION)
   build:
     commands:
-      - cd docker && docker build -t $IMAGE_URI . --build-arg COMMIT_HASH=$IMAGE_TAG
+      - docker build -t $IMAGE_URI docker --build-arg COMMIT_HASH=$IMAGE_TAG
   post_build:
     commands:
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"

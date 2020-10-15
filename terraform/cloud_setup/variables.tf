@@ -1,7 +1,7 @@
 variable "public_key" {
     description = "Public SSH key to be associated with the IAM user"
 }
-variable "project_name" {
+variable "project_name" {   
     description = "Project name, to be used in resource naming"
 }
 variable "user_name" {
@@ -20,7 +20,7 @@ variable "policies" {
     "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess",
     "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
     "arn:aws:iam::aws:policy/AmazonEKSServicePolicy",
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+    "arn:aws:iam::aws:policy/AmazonS3FullAccsless",
     "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
     "arn:aws:iam::aws:policy/AWSCodeCommitFullAccess",
     "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",

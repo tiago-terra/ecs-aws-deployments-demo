@@ -33,9 +33,9 @@ spec:
         app: deploy-demo
     spec:
       containers:
-        - image: tiago-test:latest
+        - image: $IMAGE_URI
           name: deploy-demo-container
-          imagePullPolicy: Never
+          imagePullPolicy: $IMAGE_PULL
           resources: {}
           env:
             - name: DEPLOY_TYPE
