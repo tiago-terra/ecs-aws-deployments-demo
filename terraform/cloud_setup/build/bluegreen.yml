@@ -10,10 +10,8 @@ phases:
   pre_build:
     commands:
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      - cd k8s
+      - cd k8s && envsubst '$DEPLOY_TYPE' < "manifest.yml" > "manifest_$DEPLOY_TYPE.yml"
   build:
     commands:
-      - DEPLOY_TYPE=green
-      - envsubst '$DEPLOY_TYPE' < "manifest.yml" > "manifest_$DEPLOY_TYPE.yml"
       - echo Push the latest image to cluster
       - kubectl apply -f manifest_$DEPLOY_TYPE.yml

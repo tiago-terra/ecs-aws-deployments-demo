@@ -20,3 +20,14 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = [aws_subnet.blue.id, aws_subnet.green.id]
   }
 }
+
+# Build S3 bucket for CodePipeline artifact storage
+resource "aws_s3_bucket" "artifacts" {
+  bucket = "artifacts-${var.project_name}"
+  acl    = "private"
+  force_destroy = true
+
+  lifecycle {
+    prevent_destroy = false
+  }
+}

@@ -13,7 +13,6 @@ phases:
       - cd k8s
   build:
     commands:
-      - DEPLOY_TYPE=rolling
       - envsubst '$DEPLOY_TYPE' < "manifest.yml" > "manifest_$DEPLOY_TYPE.yml"
       - echo Push the latest image to cluster
       - kubectl apply -f manifest_$DEPLOY_TYPE.yml
