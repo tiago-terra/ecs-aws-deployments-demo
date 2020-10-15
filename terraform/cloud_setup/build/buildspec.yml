@@ -7,7 +7,7 @@ phases:
       - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
   build:
     commands:
-      - cd docker && docker build -t $IMAGE_URI .
+      - cd docker && docker build -t $IMAGE_URI . --build-arg COMMIT_HASH=$IMAGE_TAG
   post_build:
     commands:
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"

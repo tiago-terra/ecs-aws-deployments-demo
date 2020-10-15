@@ -82,7 +82,7 @@ resource "aws_codepipeline" "rolling" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.rolling.main
+        ProjectName = "eks-rolling"
       }
     }
   }
@@ -116,7 +116,7 @@ resource "aws_codepipeline" "bluegreen" {
   }
 
   stage {
-    name = "Build"
+    name = "DeployBlue"
 
     action {
       name             = "Build"
@@ -127,13 +127,13 @@ resource "aws_codepipeline" "bluegreen" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.bluegreen.main
+        ProjectName = "eks-bluegreen"
       }
     }
   }
 
   stage {
-    name = "Approve"
+    name = "ManualApproval"
 
     action {
       name     = "Approval"
@@ -141,17 +141,17 @@ resource "aws_codepipeline" "bluegreen" {
       owner    = "AWS"
       provider = "Manual"
       version  = "1"
-
-      configuration {
-        NotificationArn = ""
-        CustomData = ""
-        ExternalEntityLink = ""
-      }
+    
+      # configuration = {
+      #   NotificationArn = "gs"
+      #   CustomData = ""
+      #   ExternalEntityLink = ""
+      # }
     }
   }
 
   stage {
-    name = "Build"
+    name = "DeployGreen"
 
     action {
       name             = "Build"
@@ -162,7 +162,7 @@ resource "aws_codepipeline" "bluegreen" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.bluegreen.main
+        ProjectName = "eks-bluegreen"
       }
     }
   }

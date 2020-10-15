@@ -1,5 +1,6 @@
 locals {
  deployments = ["rolling","bluegreen"]
+ buildspec_path = "terraform/code_setup/build"
 }
 
 resource "aws_codebuild_project" "main" {
@@ -32,11 +33,11 @@ resource "aws_codebuild_project" "main" {
   }
   source {
     type      = "CODEPIPELINE"
-    buildspec = "terraform/build/code_setup/buildspec.yml"
+    buildspec = "${local.buildspec_path}/buildspec.yml"
   }
 }
 
-resource "aws_codebuild_project" "rolling" {
+resource "aws_codebuild_project" "k8s" {
 
   count         = length(local.deployments)
   name          = "eks-${element(local.deployments,count.index)}"
@@ -78,6 +79,6 @@ resource "aws_codebuild_project" "rolling" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "terraform/build/code_setup/${element(local.deployments, count.index)}.yml"
+    buildspec = "${local.buildspec_path}/${element(local.deployments, count.index)}.yml"
   }
 }

@@ -14,3 +14,4 @@ phases:
     commands:
       - echo Push the latest image to cluster
       - kubectl apply -f manifest_$DEPLOY_TYPE.yml
+      - kubectl delete -f manifest_blue.yml
