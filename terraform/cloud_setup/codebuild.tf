@@ -1,6 +1,6 @@
 locals {
  deployments = ["rolling","bluegreen"]
- buildspec_path = "terraform/code_setup/build"
+ buildspec_path = "terraform/cloud_setup/build"
 }
 
 resource "aws_codebuild_project" "main" {
