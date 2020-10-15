@@ -2,13 +2,11 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-4)
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
   build:
     commands:
-      - echo Building the Docker image...
       - cd docker && docker build -t $IMAGE_URI .
   post_build:
     commands:

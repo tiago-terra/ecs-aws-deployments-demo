@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "tf_state_bucket" {
-  bucket = var.tf_bucket
+  bucket = "terraform-up-and-running-locks"
 
   versioning {
     enabled = true
@@ -19,14 +19,13 @@ resource "aws_dynamodb_table" "terraform_locks" {
     type = "S"
   }
 }
-
-# IAM Operations
+# IAM - Create user
 resource "aws_iam_user" "main" {
   name = var.service_user_name
   path = "/"
 }
 
-# IAM Policy - Role
+# IAM Policy - role policy
 data "aws_iam_policy_document" "assume_role" {
   statement {
     actions = ["sts:AssumeRole"]

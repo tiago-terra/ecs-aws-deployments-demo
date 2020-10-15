@@ -1,10 +1,8 @@
 variable "tf_bucket" {
-  default = "tf-remote-state-bucket-tiago"
-}
-variable "tf_lock_table" {
-  default = "terraform-up-and-running-locks"
+  description = "S3 bucket"
 }
 variable "services" {
+  description = "IAM policy services to associate with role"
   default = [
     "cloudwatch.amazonaws.com",
     "codebuild.amazonaws.com",
@@ -14,14 +12,12 @@ variable "services" {
     "s3.amazonaws.com"
     ]
 }
-
 variable "service_user_name" {
-  default = "service_user"
+  description = "IAM user name"
 }
-
 variable "service_role_name" {
-  default = "service_role"
+  description = "IAM role name"
 }
 variable "region" {
-  default = "eu-west-2"
+  description = "AWS Region"
 }

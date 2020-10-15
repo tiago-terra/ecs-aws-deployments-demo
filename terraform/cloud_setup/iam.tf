@@ -2,6 +2,7 @@
 data "aws_iam_user" "main" {
   user_name = var.user_name
 }
+
 # Retrieve role
 data "aws_iam_role" "main" {
   name = var.role_name
@@ -24,7 +25,6 @@ resource "aws_iam_user_ssh_key" "main" {
   username   = data.aws_iam_user.main.user_name
   encoding   = "SSH"
   public_key = var.public_key
-
 
   provisioner "local-exec" {
     command = "git remote set-url aws ssh://${self.ssh_public_key_id}@${trimprefix(aws_codecommit_repository.main.clone_url_ssh,"ssh://")}"

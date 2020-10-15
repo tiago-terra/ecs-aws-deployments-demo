@@ -2,7 +2,7 @@ variable "public_key" {
     description = "Public SSH key to be associated with the IAM user"
 }
 variable "project_name" {
-    description = "Project Name, to be used in resource naming"
+    description = "Project name, to be used in resource naming"
 }
 variable "user_name" {
     description = "IAM user name"
@@ -26,8 +26,4 @@ variable "policies" {
     "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",
     "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
     ]
-}
-variable "stages" {
-    description = "CodeCommit stages"
-    default = ["build","deploy"]
 }

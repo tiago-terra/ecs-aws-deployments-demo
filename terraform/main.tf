@@ -1,19 +1,10 @@
 provider "aws" {
-    region  = var.region
-    profile ="default"
+  region = var.region
 }
 
-# Remote Backend
 terraform {
-  backend "s3" {
-    bucket         = "tf-remote-state-bucket-tiago"
-    key            = "global/s3/terraform.tfstate"
-    dynamodb_table = "terraform-up-and-running-locks"
-    region         = "eu-west-2"
-    encrypt        = true
-  }
+  backend "s3" {}
 }
-
 
 module "cloud_setup" {
   source = "./cloud_setup"

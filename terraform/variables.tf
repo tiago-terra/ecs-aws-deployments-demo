@@ -1,13 +1,15 @@
 variable "region" {
-    default = "eu-west-2"
+    description = "AWS region"
 }
 variable "project_name" {
-    default = "deployment-project"
+    description = "Project name, to be used in resource naming"
 }
 variable "user_name" {
-    default = "service_user"
+    description = "IAM user name"
 }
 variable "role_name" {
-    default = "service_role"
+    description = "IAM role name"
 }
-variable "public_key" {}
+variable "public_key" {
+    description = "Public SSH key to be associated with the IAM user"
+}
