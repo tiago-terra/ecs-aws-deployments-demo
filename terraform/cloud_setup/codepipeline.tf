@@ -10,13 +10,16 @@ resource "aws_s3_bucket" "artifacts" {
 }
 
 resource "aws_codepipeline" "main" {
-  name     = "pipeline-${var.project_name}"
+  name     = "build-${var.project_name}"
   role_arn = data.aws_iam_role.main.arn
 
+  
   artifact_store {
     location = aws_s3_bucket.artifacts.bucket
     type     = "S3"
   }
+  
+
 
   stage {
     name = "Source"
@@ -48,7 +51,7 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = "build-project"
+        ProjectName = aws_codebuild_project.main.name
       }
     }
   }

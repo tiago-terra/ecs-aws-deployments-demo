@@ -10,10 +10,10 @@ phases:
   pre_build:
     commands:
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      - K8S_DIR="$CODEBUILD_SRC_DIR/k8s"
+      - cd k8s
   build:
     commands:
-      - cd $K8S_DIR
-      - ls -la
+      - DEPLOY_TYPE=rolling
+      - envsubst '$DEPLOY_TYPE' < "manifest.yml" > "manifest_$DEPLOY_TYPE.yml"
       - echo Push the latest image to cluster
-      - kubectl apply -f $DEPLOY_MANIFEST
+      - kubectl apply -f manifest_$DEPLOY_TYPE.yml

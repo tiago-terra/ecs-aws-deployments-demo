@@ -1,0 +1,31 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - KUBE_URL=https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+      - echo Setting up kubectl...
+      - curl -o kubectl $KUBE_URL && chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - source ~/.bashrc
+  pre_build:
+    commands:
+      - echo Logging into ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+  build:
+    commands:
+      - cd docker && docker build -t $IMAGE_URI .
+      - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push $IMAGE_URI
+      - echo Logging into EKS...
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+      - DEPLOY_TYPE=green
+      - cd ../k8s
+      - envsubst '$DEPLOY_TYPE' < "manifest.yml" > "manifest_$DEPLOY_TYPE.yml"
+      - echo Push the latest image to cluster
+      - kubectl apply -f manifest_$DEPLOY_TYPE.yml
