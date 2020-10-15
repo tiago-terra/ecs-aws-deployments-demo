@@ -1,5 +1,9 @@
 version: 0.2
 
+env:
+  variables:
+    BUILD_SCRIPT: "terraform/cloud_setup/build/deploy.sh"
+
 phases:
   pre_build:
     commands:
@@ -12,7 +16,7 @@ phases:
       - docker build -t $IMAGE_URI docker --build-arg COMMIT_HASH=$IMAGE_TAG
   post_build:
     commands:
-      - ./deploy.sh
+      - sh $BUILD_SCRIPT
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
       - echo Pushing the Docker image...
       - docker push $IMAGE_URI
