@@ -1,0 +1,19 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - source ~/.bashrc
+  pre_build:
+    commands:
+      - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+      - K8S_DIR="$CODEBUILD_SRC_DIR/k8s"
+  build:
+    commands:
+      - cd $K8S_DIR
+      - ls -la
+      - echo Push the latest image to cluster
+      - kubectl apply -f $DEPLOY_MANIFEST

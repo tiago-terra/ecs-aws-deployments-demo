@@ -39,9 +39,8 @@ resource "aws_codebuild_project" "main" {
 
     environment_variable {
       name = "DEPLOY_MANIFEST"
-      value = ""
+      value = "manifest.yml"
     }
-
   }
 
   source {
