@@ -6,7 +6,7 @@ phases:
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
       - echo Logging in to Amazon ECR...
-      - docker login -u AWS -p $(aws ecr get-login-password --region $AWS_DEFAULT_REGION)
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION
   build:
     commands:
       - docker build -t $IMAGE_URI docker --build-arg COMMIT_HASH=$IMAGE_TAG
