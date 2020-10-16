@@ -48,8 +48,6 @@ function sub_vars () {
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
   envsubst "\$TYPE" < "$SERVICE_FILE" > "tmp_${SERVICE_FILE}"
-
-  envsubst "\$ROLE_ARN" < "aws-auth.yml" > "aws-auth_tmp.yml"
 }
 
 function kube_deploy () {
@@ -59,7 +57,6 @@ function kube_deploy () {
 
   kubectl && cat "${DEPLOY_TYPE}_deployment.yml"
 
-  kubectl apply -f aws-auth_tmp.yml
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
