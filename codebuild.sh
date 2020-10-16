@@ -33,7 +33,7 @@ function tools_install () {
 }
 
 function sub_vars () {
-  # Args - deploy_type, path
+  # Args - deploy_type
   local SERVICE_FILE="service.yml"
   local DEPLOY_FILE="deployment.yml"
   local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE"
@@ -53,7 +53,7 @@ function kube_deploy () {
 
   cd $CODEBUILD_SRC_DIR/k8s && ls -al
 
-  sub_vars $DEPLOY_TYPE 
+  sub_vars $DEPLOY_TYPE
 
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
