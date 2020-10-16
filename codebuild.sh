@@ -4,7 +4,7 @@
 # $1 - action - install/build/deploy
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
-export MANIFEST_PATH="k8s"
+export MANIFEST_PATH="./k8s"
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 1; fi
 
 function exit_run () {
