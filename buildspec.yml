@@ -7,13 +7,13 @@ phases:
     commands:
       - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - bash $BUILD_SCRIPT install
-  build:
+  pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||')
       - echo Logging in to Amazon EKS...
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      # Configure kubectl
-      - aws eks --region us-east-1 update-kubeconfig --name devel
+  build:
+    commands:
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy
