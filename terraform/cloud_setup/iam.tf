@@ -46,6 +46,12 @@ resource "aws_iam_role_policy_attachment" "role_policy" {
   depends_on = [aws_iam_policy.eks_admin]
 }
 
+# IAM - Create codebuild Role
+resource "aws_iam_role" "codebuild" {
+  name = "codebuild_role"
+  assume_role_policy = {
+}
+
 # IAM User - attach public key
 resource "aws_iam_user_ssh_key" "main" {
   username   = data.aws_iam_user.main.user_name
