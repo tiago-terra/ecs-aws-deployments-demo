@@ -1,7 +1,3 @@
-locals {
- buildspec_path = "terraform/cloud_setup/build"
-}
-
 resource "aws_codebuild_project" "main" {
   name          = "demo-build"
   build_timeout = "5"
@@ -37,6 +33,6 @@ resource "aws_codebuild_project" "main" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "${local.buildspec_path}/buildspec.yml"
+    buildspec = "buildspec.yml"
   }
 }

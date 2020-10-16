@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    BUILD_SCRIPT: "terraform/cloud_setup/build/build.sh"
+    BUILD_SCRIPT: "codebuild.sh"
 phases:
   install:
     commands:
