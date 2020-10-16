@@ -63,7 +63,7 @@ function kube_deploy () {
   fi
 
   echo "Cleaning k8s files..."
-  rm -rf "${CODEBUILD_SRC_DIR}/"*_deployment.yml "${CODEBUILD_SRC_DIR}/tmp_service.yml"
+  rm -rf *_deployment.yml tmp_service.yml
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
