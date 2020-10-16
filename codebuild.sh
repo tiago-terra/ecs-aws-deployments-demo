@@ -10,7 +10,7 @@ export MANIFEST_PATH="k8s"
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 1; fi
 
 function build_push_ecr () {
-  #Args - ECR REPO, ECR IMAGE TAG
+  #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
 
   echo "Building docker image..."
