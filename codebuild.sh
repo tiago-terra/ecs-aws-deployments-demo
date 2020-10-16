@@ -37,7 +37,7 @@ function sub_vars () {
   # Args - deploy_type
   local SERVICE_FILE="service.yml"
   local DEPLOY_FILE="deployment.yml"
-  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE \$ROLE_ARN" 
+  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE" 
 
   for i in blue green rolling
     do
@@ -49,6 +49,7 @@ function sub_vars () {
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
   envsubst "\$TYPE" < "$SERVICE_FILE" > "tmp_${SERVICE_FILE}"
 
+  envsubst "\$ROLE_ARN" < "aws-auth.yml" > "aws-auth_tmp.yml"
 }
 
 function kube_deploy () {
@@ -58,6 +59,7 @@ function kube_deploy () {
 
   kubectl && cat "${DEPLOY_TYPE}_deployment.yml"
 
+  kubectl apply -f aws-auth_tmp.yml
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
@@ -66,7 +68,7 @@ function kube_deploy () {
   fi
 
   echo "Cleaning k8s files..."
-  rm -rf *_deployment.yml tmp_service.yml
+  rm -rf *_deployment.yml tmp*
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
