@@ -1,15 +1,15 @@
 #!/bin/sh
 
 # Codebuild Operations script
-# $1 - action (install/build/deploy)
-
+# $1 - action - install/build/deploy
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export MANIFEST_PATH="k8s"
-
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 1; fi
 
+
 function build_push_ecr () {
+  echo "test"
   #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
 
