@@ -1,4 +1,4 @@
-#!/bin/sh
+#/bin/bash
 
 # Codebuild Operations script
 # $1 - action - install/build/deploy
