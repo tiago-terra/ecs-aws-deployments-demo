@@ -5,7 +5,6 @@
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AWS_IAM_AUTH="https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator"
-export MANIFEST_PATH="k8s"
 
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
 
@@ -31,13 +30,7 @@ function tools_install () {
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
   echo "kubectl installed!"
-
-# Install Iam Authenticator
-- curl -o aws-iam-authenticator $AWS_IAM_AUTH
-- chmod +x ./aws-iam-authenticator
-- mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
 }
-
 
 function sub_vars () {
   # Args - deploy_type, path
@@ -58,18 +51,16 @@ function sub_vars () {
 
 function kube_deploy () {
 
-  sub_vars $DEPLOY_TYPE $MANIFEST_PATH
-  kubectl apply -f "${MANIFEST_PATH}/${DEPLOY_TYPE}_deployment.yml"
-  kubectl apply -f "${MANIFEST_PATH}/tmp_service.yml"
-
-  ls k8s
+  sub_vars $DEPLOY_TYPE $CODEBUILD_SRC_DIR
+  kubectl apply -f "$CODEBUILD_SRC_DIR/k8s/${DEPLOY_TYPE}_deployment.yml"
+  kubectl apply -f "$CODEBUILD_SRC_DIR/k8s/tmp_service.yml"
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    kubectl delete -f "${MANIFEST_PATH}/blue_deployment.yml"
+    kubectl delete -f "${CODEBUILD_SRC_DIR}/blue_deployment.yml"
   fi
 
   echo "Cleaning k8s files..."
-  rm -rf "${MANIFEST_PATH}/"*_deployment.yml "${MANIFEST_PATH}/tmp_service.yml"
+  rm -rf "${CODEBUILD_SRC_DIR}/"*_deployment.yml "${CODEBUILD_SRC_DIR}/tmp_service.yml"
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
