@@ -9,7 +9,7 @@ export MANIFEST_PATH="k8s"
 
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 1; fi
 
-function push_to_ecr () {
+function build_push_ecr () {
   #Args - ECR REPO, ECR IMAGE TAG
   export IMAGE_URI="$1:$2"
 
@@ -63,5 +63,5 @@ function kube_deploy () {
 }
 
 if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
-if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then push_to_ecr $ECR_REPO $COMMIT_HASH; fi
+if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $COMMIT_HASH; fi
 if [ $1 == 'deploy' ]; then kube_deploy; fi
