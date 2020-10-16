@@ -37,7 +37,7 @@ function sub_vars () {
   # Args - deploy_type
   local SERVICE_FILE="service.yml"
   local DEPLOY_FILE="deployment.yml"
-  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE $\ROLE_ARN" 
+  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE \$ROLE_ARN" 
 
   for i in blue green rolling
     do
@@ -48,6 +48,7 @@ function sub_vars () {
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
   envsubst "\$TYPE" < "$SERVICE_FILE" > "tmp_${SERVICE_FILE}"
+
 }
 
 function kube_deploy () {
