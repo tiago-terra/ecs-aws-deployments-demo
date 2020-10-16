@@ -1,7 +1,7 @@
 version: 0.2
 env:
   variables:
-    BUILD_SCRIPT: "terraform/cloud_setup/build/deploy.sh"
+    BUILD_SCRIPT: "terraform/cloud_setup/build/build.sh"
 phases:
   install:
     commands:
@@ -17,4 +17,4 @@ phases:
       - sh $BUILD_SCRIPT build
   post_build:
     commands:
-      - sh $BUILD_SCRIPT deploy $DEPLOY_TYPE
+      - sh $BUILD_SCRIPT deploy

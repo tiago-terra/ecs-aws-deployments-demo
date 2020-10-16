@@ -3,22 +3,22 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: $TYPE-app
-  name: $TYPE-deployment
+    app: ${TYPE}-app
+  name: ${TYPE}-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: $TYPE-app
+      app: ${TYPE}-app
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: $TYPE-app
+        app: ${TYPE}-app
     spec:
       containers:
         - image: $ECR_REPO:$COMMIT_HASH
-          name: $TYPE-container
+          name: ${TYPE}-container
           imagePullPolicy: Always
           resources: {}
           env:

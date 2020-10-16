@@ -1,10 +1,11 @@
 #!/bin/sh
-# Operations
-# $1 - Action - install/build/deploy
+
+# Codebuild Operations script
+# $1 - action (install/build/deploy)
+
 export COMMIT_HASH=$(git rev-parse HEAD | cut -c 1-7)
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
-export MANIFEST_PATH="../../../k8s"
-export IMAGE_PULL="Always"
+export MANIFEST_PATH="k8s"
 
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 1; fi
 
@@ -31,34 +32,36 @@ function kube_install () {
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.profile
   echo "kubectl installed!"
 }
-
 function sub_vars () {
-  # Args - file, deploy_type
+  # Args - deploy_type, path
+  local SERVICE_FILE="service.yml"
+  local DEPLOY_FILE="deployment.yml"
+  local vars_string="\$ECR_REPO \$COMMIT_HASH \$TYPE"
 
-  local FILE=$1
-  local vars_string="\$ECR_REPO \$COMMIT_HASH \$DEPLOY_TYPE \$IMAGE_PULL"
-  echo $DEPLOY_TYPE
-  envsubst "$vars_string" < "${MANIFEST_PATH}/$FILE" > "${MANIFEST_PATH}/${DEPLOY_TYPE}_${FILE}"
+  for i in blue green rolling
+    do
+      export TYPE="$i" && export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
+      envsubst "$vars_string" < "$2/$DEPLOY_FILE" > "$2/${TYPE}_$DEPLOY_FILE"
+    done
+  
+  export TYPE="$1"
+  export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
+  envsubst "\$TYPE" < "$2/$SERVICE_FILE" > "$2/tmp_${SERVICE_FILE}"
 }
-
 function kube_deploy () {
 
+  sub_vars $DEPLOY_TYPE $MANIFEST_PATH
+  kubectl apply -f "${MANIFEST_PATH}/${DEPLOY_TYPE}_deployment.yml"
+  kubectl apply -f "${MANIFEST_PATH}/tmp_service.yml"
 
+  if [ $DEPLOY_TYPE == 'green' ]; then
+    kubectl delete -f "${MANIFEST_PATH}/blue_deployment.yml"
+  fi
 
-
+  echo "Cleaning k8s files..."
+  rm -rf "${MANIFEST_PATH}/"*_deployment.yml "${MANIFEST_PATH}/tmp_service.yml"
 }
-
 
 if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
 if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then push_to_ecr $ECR_REPO $COMMIT_HASH; fi
-
-if [ $1 == 'deploy' ]; then
-
-  kubectl apply -f "${MANIFEST_PATH}/$DEPLOY_TYPE_manifest.yml"
-  if [ $1 == 'green' ]; then kubectl delete -f "${MANIFEST_PATH}/blue_manifest.yml"; fi
-fi
-
-
-
-
-
+if [ $1 == 'deploy' ]; then kube_deploy; fi
