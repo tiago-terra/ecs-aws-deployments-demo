@@ -36,7 +36,7 @@ function sub_vars () {
   # Args - deploy_type
   local SERVICE_FILE="service.yml"
   local DEPLOY_FILE="deployment.yml"
-  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE"
+  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE $\ROLE_ARN" 
 
   for i in blue green rolling
     do

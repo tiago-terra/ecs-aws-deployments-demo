@@ -29,6 +29,10 @@ resource "aws_codebuild_project" "main" {
       name = "EKS_CLUSTER_NAME"
       value = aws_eks_cluster.main.name
     }
+    environment_variable {
+      name = "ROLE_ARN"
+      value = data.aws_iam_role.main.arn
+    }
   }
 
   source {
