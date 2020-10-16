@@ -51,10 +51,10 @@ function sub_vars () {
 
 function kube_deploy () {
 
-  cd $CODEBUILD_SRC_DIR/k8s && ls -al
+  cd $CODEBUILD_SRC_DIR/k8s
 
   sub_vars $DEPLOY_TYPE
-
+  ls -al
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
