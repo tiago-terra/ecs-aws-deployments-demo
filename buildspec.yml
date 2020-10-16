@@ -9,9 +9,9 @@ phases:
       - bash $BUILD_SCRIPT install
   build:
     commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION --no-include-email
       - echo Logging in to Amazon EKS...
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy
