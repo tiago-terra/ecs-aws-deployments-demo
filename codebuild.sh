@@ -63,7 +63,7 @@ function kube_deploy () {
 
 if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
 if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then 
-  build_push_ecr $ECR_REPO $IMAGE_TAG || echo "Error: Failed to push" && exit 255; 
+  build_push_ecr $ECR_REPO $IMAGE_TAG
 fi
 
 if [ $1 == 'deploy' ]; then kube_deploy; fi
