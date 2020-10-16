@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-deploy
+  name: service-deploy-green
   labels:
     app: deploy-demo
 spec:
@@ -20,7 +20,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: deploy-demo
-  name: deployment-demo-rolling
+  name: deployment-demo-green
 spec:
   replicas: 2
   selector:
@@ -33,13 +33,15 @@ spec:
         app: deploy-demo
     spec:
       containers:
-        - image: $IMAGE_URI
+        - image: $ECR_REPO:$COMMIT_HASH
           name: deploy-demo-container
-          imagePullPolicy: $IMAGE_PULL
+          imagePullPolicy: Always
           resources: {}
           env:
             - name: DEPLOY_TYPE
-              value: rolling
+              value: green
+            - name: DEPLOY_COLOR
+              value: green
           ports:
             - name: web
               containerPort: 80
