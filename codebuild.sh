@@ -1,13 +1,12 @@
 #/bin/bash
 
-# Codebuild Operations script
 # $1 - action - install/build/deploy
+
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
-export MANIFEST_PATH="./k8s"
+export MANIFEST_PATH="k8s"
+
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
-
-
 
 function build_push_ecr () {
   echo "test"
@@ -31,6 +30,7 @@ function kube_install () {
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.profile
   echo "kubectl installed!"
 }
+
 function sub_vars () {
   # Args - deploy_type, path
   local SERVICE_FILE="service.yml"
@@ -47,11 +47,14 @@ function sub_vars () {
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
   envsubst "\$TYPE" < "$2/$SERVICE_FILE" > "$2/tmp_${SERVICE_FILE}"
 }
+
 function kube_deploy () {
 
   sub_vars $DEPLOY_TYPE $MANIFEST_PATH
   kubectl apply -f "${MANIFEST_PATH}/${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "${MANIFEST_PATH}/tmp_service.yml"
+
+  ls
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete -f "${MANIFEST_PATH}/blue_deployment.yml"
