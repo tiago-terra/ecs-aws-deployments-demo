@@ -41,19 +41,22 @@ function sub_vars () {
   for i in blue green rolling
     do
       export TYPE="$i" && export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-      envsubst "$vars_string" < "$2/$DEPLOY_FILE" > "$2/${TYPE}_$DEPLOY_FILE"
+      envsubst "$vars_string" < "$DEPLOY_FILE" > "${TYPE}_$DEPLOY_FILE"
     done
   
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-  envsubst "\$TYPE" < "$2/$SERVICE_FILE" > "$2/tmp_${SERVICE_FILE}"
+  envsubst "\$TYPE" < "$SERVICE_FILE" > "tmp_${SERVICE_FILE}"
 }
 
 function kube_deploy () {
 
-  sub_vars $DEPLOY_TYPE $CODEBUILD_SRC_DIR
-  kubectl apply -f "$CODEBUILD_SRC_DIR/k8s/${DEPLOY_TYPE}_deployment.yml"
-  kubectl apply -f "$CODEBUILD_SRC_DIR/k8s/tmp_service.yml"
+  cd $CODEBUILD_SRC_DIR/k8s && ls -al
+
+  sub_vars $DEPLOY_TYPE 
+
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
+  kubectl apply -f "tmp_service.yml"
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete -f "${CODEBUILD_SRC_DIR}/blue_deployment.yml"
