@@ -13,5 +13,7 @@ phases:
       - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||')
       - echo Logging in to Amazon EKS...
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+      # Configure kubectl
+      - aws eks --region us-east-1 update-kubeconfig --name devel
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy

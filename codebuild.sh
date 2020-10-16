@@ -4,6 +4,7 @@
 
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
+export AWS_IAM_AUTH="https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator"
 export MANIFEST_PATH="k8s"
 
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
@@ -21,15 +22,22 @@ function build_push_ecr () {
   echo "Image pushed to ECR!"
 }
 
-function kube_install () {
+function tools_install () {
   echo "Downloading kubectl..."
-  curl -o kubectl $1
+  curl -o kubectl $KUBE_URL
   chmod +x ./kubectl
-  mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl
+  mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+  kubectl version --short --client
   PATH=$PATH:$HOME/bin
-  echo 'export PATH=$PATH:$HOME/bin' >> ~/.profile
+  echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
   echo "kubectl installed!"
+
+# Install Iam Authenticator
+- curl -o aws-iam-authenticator $AWS_IAM_AUTH
+- chmod +x ./aws-iam-authenticator
+- mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
 }
+
 
 function sub_vars () {
   # Args - deploy_type, path
@@ -64,7 +72,7 @@ function kube_deploy () {
   rm -rf "${MANIFEST_PATH}/"*_deployment.yml "${MANIFEST_PATH}/tmp_service.yml"
 }
 
-if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
+if [ $1 == 'install' ]; then tools_install; fi
 if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then 
   build_push_ecr $ECR_REPO $IMAGE_TAG
 fi
