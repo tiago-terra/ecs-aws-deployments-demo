@@ -1,7 +1,6 @@
 #/bin/bash
 
 # $1 - action - install/build/deploy
-
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AWS_IAM_AUTH="https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator"
@@ -29,6 +28,8 @@ function tools_install () {
   kubectl version --short --client
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+  source ~/.bashrc
+
   echo "kubectl installed!"
 }
 
@@ -54,7 +55,6 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
 
   sub_vars $DEPLOY_TYPE
-  ls -al
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
@@ -67,8 +67,5 @@ function kube_deploy () {
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
-if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then 
-  build_push_ecr $ECR_REPO $IMAGE_TAG
-fi
-
+if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
 if [ $1 == 'deploy' ]; then kube_deploy; fi
