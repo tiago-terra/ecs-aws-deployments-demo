@@ -3,7 +3,7 @@
 # Codebuild Operations script
 # $1 - action (install/build/deploy)
 
-export COMMIT_HASH=$(git rev-parse HEAD | cut -c 1-7)
+export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export MANIFEST_PATH="k8s"
 
@@ -14,7 +14,7 @@ function build_push_ecr () {
   export IMAGE_URI="$1:$2"
 
   echo "Building docker image..."
-  docker build -t $IMAGE_URI docker --build-arg COMMIT_HASH=$2
+  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2
 
   if [ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]; then exit 1; fi
 
@@ -36,7 +36,7 @@ function sub_vars () {
   # Args - deploy_type, path
   local SERVICE_FILE="service.yml"
   local DEPLOY_FILE="deployment.yml"
-  local vars_string="\$ECR_REPO \$COMMIT_HASH \$TYPE"
+  local vars_string="\$ECR_REPO \$IMAGE_TAG \$TYPE"
 
   for i in blue green rolling
     do
@@ -63,5 +63,5 @@ function kube_deploy () {
 }
 
 if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
-if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $COMMIT_HASH; fi
+if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
 if [ $1 == 'deploy' ]; then kube_deploy; fi

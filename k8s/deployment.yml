@@ -17,7 +17,7 @@ spec:
         app: ${TYPE}-app
     spec:
       containers:
-        - image: $ECR_REPO:$COMMIT_HASH
+        - image: $ECR_REPO:$IMAGE_TAG
           name: ${TYPE}-container
           imagePullPolicy: Always
           resources: {}

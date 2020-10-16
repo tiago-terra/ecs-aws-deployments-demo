@@ -5,6 +5,7 @@ env:
 phases:
   install:
     commands:
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - sh $BUILD_SCRIPT install
   pre_build:
     commands:
