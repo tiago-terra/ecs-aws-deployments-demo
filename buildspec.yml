@@ -3,7 +3,7 @@ env:
   variables:
     BUILD_SCRIPT: "codebuild.sh"
 phases:
-  pre_build:
+  install:
     commands:
       - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - bash $BUILD_SCRIPT install
