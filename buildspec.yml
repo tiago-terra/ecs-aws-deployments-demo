@@ -6,7 +6,7 @@ phases:
   install:
     commands:
       - export IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - ./$BUILD_SCRIPT install
+      - bash $BUILD_SCRIPT install
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -15,7 +15,7 @@ phases:
       - aws eks --region $AWS_DEFAULT_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
   build:
     commands:
-      - ./$BUILD_SCRIPT build
+      - bash $BUILD_SCRIPT build
   post_build:
     commands:
-      - ./$BUILD_SCRIPT deploy
+      - bash $BUILD_SCRIPT deploy
