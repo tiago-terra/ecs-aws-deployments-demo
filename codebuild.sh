@@ -54,7 +54,7 @@ function kube_deploy () {
   kubectl apply -f "${MANIFEST_PATH}/${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "${MANIFEST_PATH}/tmp_service.yml"
 
-  ls
+  ls k8s
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete -f "${MANIFEST_PATH}/blue_deployment.yml"
