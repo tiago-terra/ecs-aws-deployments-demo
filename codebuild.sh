@@ -19,10 +19,11 @@ function build_push_ecr () {
   if [ "$CODEBUILD_BUILD_SUCCEEDING" == "0" ]; then exit 1; fi
 
   echo "Pushing image with tag :$1 to repo $2..."
-  docker push $IMAGE_URI || echo "Error: Failed to push" && exit 1
+  docker push $IMAGE_URI
 
   echo "Image pushed to ECR!"
 }
+
 function kube_install () {
   echo "Downloading kubectl..."
   curl -o kubectl $1
@@ -63,5 +64,8 @@ function kube_deploy () {
 }
 
 if [ $1 == 'install' ]; then kube_install $KUBE_URL; fi
-if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
+if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then 
+  build_push_ecr $ECR_REPO $IMAGE_TAG || echo "Error: Failed to push" && exit 1; 
+fi
+
 if [ $1 == 'deploy' ]; then kube_deploy; fi

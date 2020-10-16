@@ -10,7 +10,7 @@ data "aws_iam_role" "main" {
 
 # Create EKSAdmin policy
 resource "aws_iam_policy" "eks_admin" {
-  name        = "EKSAdminPolicy"
+  name        = "AmazonEKSAdminPolicy"
   path        = "/"
   description = "EKS Administrator policy"
 
@@ -28,16 +28,22 @@ resource "aws_iam_policy" "eks_admin" {
 EOF
 }
 
+locals {
+  policies = concat(var.policies,[aws_iam_policy.eks_admin.arn])
+}
+
 resource "aws_iam_user_policy_attachment" "user_attachment" {
-  count      = length(var.policies)
+  count      = length(local.policies)
   user       = data.aws_iam_user.main.user_name
-  policy_arn = element(concat(var.policies,[aws_iam_policy.eks_admin.arn]), count.index)
+  policy_arn = element(local.policies, count.index)
+  depends_on = [aws_iam_policy.eks_admin]
 }
 
 resource "aws_iam_role_policy_attachment" "role_policy" {
-  count      = length(var.policies)
+  count      = length(local.policies)
   role       = data.aws_iam_role.main.name
-  policy_arn = element(concat(var.policies,[aws_iam_policy.eks_admin.arn]), count.index)
+  policy_arn = element(local.policies, count.index)
+  depends_on = [aws_iam_policy.eks_admin]
 }
 
 # IAM User - attach public key
