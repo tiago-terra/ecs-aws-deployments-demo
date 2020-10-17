@@ -10,6 +10,6 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
-      name: web
+      name: ${TYPE}-web
   selector:
     app: ${TYPE}-app
