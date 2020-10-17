@@ -21,11 +21,16 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = [aws_subnet.blue.id, aws_subnet.green.id]
   }
 
+  # Update kubeconfig
   provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name ${self.name}"
+    command = "export AWS_DEFAULT_PROFILE=default && aws eks --region ${var.region} update-kubeconfig --name ${self.name}"
   }
-
+  # Replace aws-auth vars
   provisioner "local-exec" {
-    command = "export DEPLOY_ROLE_ARN=${aws_iam_role.deploy_role.arn} && envsubst '$DEPLOY_ROLE_ARN' > ../k8s/aws-auth > aws-auth_tmp.yml && kube apply -f aws-auth_tmp.yml && rm aws-auth_tmp.yml"
+    command = "export DEPLOY_ROLE_ARN=${aws_iam_role.deploy_role.arn} && envsubst '$DEPLOY_ROLE_ARN' < ../k8s/aws-auth.yml > aws-auth_tmp.yml"
+  }
+  # Apply configMap
+  provisioner "local-exec" {
+    command = "kubectl apply -f aws-auth_tmp.yml && rm aws-auth_tmp.yml"
   }
 }
