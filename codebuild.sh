@@ -51,7 +51,7 @@ function sub_vars () {
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
   envsubst "\$TYPE" < $SERVICE_FILE > "tmp_${SERVICE_FILE}"
-  envsubst "\$DEPLOY_ROLE_ARN" < aws-auth_template.yml > aws-auth.yml
+  envsubst "\$DEPLOY_ROLE_ARN" < aws-auth.yml > tmp.yml && mv tmp aws-auth.yml
 }
 
 function kube_deploy () {
@@ -59,7 +59,7 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  kubectl apply -f tmp_aws
+  kubectl apply -f aws-auth.yml
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
