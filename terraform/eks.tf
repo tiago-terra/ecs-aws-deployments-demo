@@ -36,7 +36,7 @@ module "eks" {
   worker_groups = [
     {
       instance_type = "t2.micro"
-      asg_max_size  = 2
+      asg_max_size  = 4
       additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
     }
   ]
