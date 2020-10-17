@@ -6,7 +6,7 @@ metadata:
     app: ${TYPE}-app
   name: ${TYPE}-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: ${TYPE}-app
