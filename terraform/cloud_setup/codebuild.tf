@@ -3,10 +3,15 @@
 resource "aws_codebuild_project" "main" {
   name          = "demo-build"
   build_timeout = "5"
-  service_role  = data.aws_iam_role.main.arn
+  service_role  = data.aws_iam_role.deploy_role.arn
 
   artifacts {
     type = "CODEPIPELINE"
+  }
+
+  cache {
+    type = "S3"
+    location = aws_s3_bucket.artifacts.bucket
   }
 
   logs_config {
