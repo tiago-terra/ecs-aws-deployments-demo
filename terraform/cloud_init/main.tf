@@ -34,6 +34,7 @@ data "aws_iam_policy_document" "assume_role" {
       type = "AWS"
       identifiers = [aws_iam_user.main.arn]
     }
+
     principals {
       type = "Service"
       identifiers = var.services
