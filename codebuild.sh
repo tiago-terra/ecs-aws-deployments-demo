@@ -62,10 +62,10 @@ function kube_deploy () {
   if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    EXTERNAL_IP=$(kubectl get svc blue-lb -o jsonpath="{.status.loadBalancer.ingress[0].hostname}")
-    curl -s http://$EXTERNAL_IP
+    EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+    curl -s http://$EXTERNAL_HOST
 
-    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml 
+    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
     kubectl apply -f service_green.yml
   fi
 
