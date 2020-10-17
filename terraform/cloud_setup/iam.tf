@@ -52,11 +52,6 @@ resource "aws_iam_user_ssh_key" "main" {
   depends_on = [aws_codecommit_repository.main]
 }
 
-#
-# CODEBUILD/EKS
-#
-
-
 # Create assume role trust
 data "aws_iam_policy_document" "deploy_role" {
   statement {
@@ -65,7 +60,10 @@ data "aws_iam_policy_document" "deploy_role" {
       type = "Service"
       identifiers = ["cloudwatch.amazonaws.com","codebuild.amazonaws.com","eks.amazonaws.com" ]
     }
-    
+    principals {
+      type = "AWS"
+      identifiers = [data.aws_iam_role.main.arn]
+    } 
   }
 }
 

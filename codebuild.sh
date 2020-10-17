@@ -3,6 +3,7 @@
 # $1 - action - install/build/deploy
 export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
+export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
 export AWS_IAM_AUTH="https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator"
 
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
@@ -21,9 +22,11 @@ function build_push_ecr () {
 }
 
 function tools_install () {
-  echo "Downloading kubectl..."
+  echo "Downloading kubectl and iam-authenticator..."
   curl -o kubectl $KUBE_URL
-  chmod +x ./kubectl
+  curl -sS -o aws-iam-authenticator $AUTHENTICATOR_URL
+
+  chmod +x ./kubectl ./aws-iam-authenticator
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
   kubectl version --short --client
   PATH=$PATH:$HOME/bin
