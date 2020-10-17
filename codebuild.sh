@@ -64,7 +64,9 @@ function kube_deploy () {
   if [ $DEPLOY_TYPE == 'green' ]; then
     EXTERNAL_IP=$(kubectl get svc blue-lb -o jsonpath="{.status.loadBalancer.ingress[0].hostname}")
     curl -s http://$EXTERNAL_IP
-    
+
+    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml 
+    kubectl apply -f service_green.yml
   fi
 
   echo "Cleaning k8s files..."
