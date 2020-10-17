@@ -62,9 +62,9 @@ function kube_deploy () {
   if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    EXTERNAL_IP=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].ip}")
+    EXTERNAL_IP=$(kubectl get svc blue-lb -o jsonpath="{.status.loadBalancer.ingress[0].hostname}")
     curl -s http://$EXTERNAL_IP
-    # kubectl delete deployment blue-deployment
+    
   fi
 
   echo "Cleaning k8s files..."
