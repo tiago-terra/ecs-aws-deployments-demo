@@ -62,7 +62,7 @@ function kube_deploy () {
   kubectl apply -f tmp_service.yml
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    kubectl delete deployment blue-deployment
+    # kubectl delete deployment blue-deployment
   fi
 
   echo "Cleaning k8s files..."
