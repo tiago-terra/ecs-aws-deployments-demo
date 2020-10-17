@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${TYPE}-lb
+  name: demo-lb
   labels:
     app: ${TYPE}-app
 spec:
@@ -10,6 +10,7 @@ spec:
     - port: 80
       targetPort: 80
       protocol: TCP
-      name: ${TYPE}-web
+      name: web
   selector:
+    name: web-container
     app: ${TYPE}-app

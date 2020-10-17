@@ -9,6 +9,7 @@ spec:
   replicas: 2
   selector:
     matchLabels:
+      name: web-container
       app: ${TYPE}-app
   template:
     metadata:
@@ -18,7 +19,7 @@ spec:
     spec:
       containers:
         - image: $ECR_REPO:$IMAGE_TAG
-          name: ${TYPE}-container
+          name: web-container
           imagePullPolicy: Always
           resources: {}
           env:
@@ -29,7 +30,7 @@ spec:
             - name: COMMIT_VERSION
               value: ${IMAGE_TAG}
           ports:
-            - name: ${TYPE}-web
+            - name: web
               containerPort: 80
               protocol: TCP
           readinessProbe:
@@ -39,9 +40,4 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 10
-    strategy:
-      type: RollingUpdate
-      rolling_update:
-        maxSurge: 2
-        maxUnavailable: 0
 status: {}

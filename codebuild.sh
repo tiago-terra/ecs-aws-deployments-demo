@@ -59,7 +59,7 @@ function kube_deploy () {
   sub_vars $DEPLOY_TYPE
 
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
-  kubectl apply -f tmp_service.yml
+  if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     EXTERNAL_IP=$(kubectl get svc blue-lb -o jsonpath="{.status.loadBalancer.ingress[*].ip}")
