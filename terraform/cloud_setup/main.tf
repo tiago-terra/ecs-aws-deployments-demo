@@ -17,8 +17,15 @@ resource "aws_eks_cluster" "main" {
   enabled_cluster_log_types = ["api","audit","authenticator","controllerManager","scheduler"]
   role_arn = aws_iam_role.deploy_role.arn
 
-
   vpc_config {
     subnet_ids = [aws_subnet.blue.id, aws_subnet.green.id]
+  }
+
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${self.name}"
+  }
+
+  provisioner "local-exec" {
+    command = "export DEPLOY_ROLE_ARN=${aws_iam_role.deploy_role.arn} && envsubst '$DEPLOY_ROLE_ARN' > ../k8s/aws-auth > aws-auth_tmp.yml && kube apply -f aws-auth_tmp.yml && rm aws-auth_tmp.yml"
   }
 }
