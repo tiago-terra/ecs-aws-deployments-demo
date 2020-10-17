@@ -14,7 +14,7 @@ resource "aws_ecr_repository" "main" {
 # EKS - Create cluster
 resource "aws_eks_cluster" "main" {
   name     = "eks_${var.project_name}"
-  role_arn = data.aws_iam_role.main.arn
+  role_arn = aws_iam_role.deploy_role.arn
 
   vpc_config {
     subnet_ids = [aws_subnet.blue.id, aws_subnet.green.id]

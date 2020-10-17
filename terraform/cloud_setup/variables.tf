@@ -13,17 +13,23 @@ variable "role_name" {
 variable "region" {
 	description = "AWS region"
 }
-variable "policies" {
+variable "build_policies" {
 	description = "IAM policies to be applied to user/role"
 	default = [
 		"arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
 		"arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess",
-		"arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
-		"arn:aws:iam::aws:policy/AmazonEKSServicePolicy",
 		"arn:aws:iam::aws:policy/AmazonS3FullAccess",
 		"arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
 		"arn:aws:iam::aws:policy/AWSCodeCommitFullAccess",
 		"arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess",
 		"arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+	]
+}
+variable "deploy_policies" {
+	default = [
+		"arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser",
+		"arn:aws:iam::aws:policy/AmazonEC2ContainerServiceFullAccess",
+		"arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+		"arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
 	]
 }

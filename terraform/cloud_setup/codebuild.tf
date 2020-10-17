@@ -1,3 +1,5 @@
+
+
 resource "aws_codebuild_project" "main" {
   name          = "demo-build"
   build_timeout = "5"
@@ -30,11 +32,10 @@ resource "aws_codebuild_project" "main" {
       value = aws_eks_cluster.main.name
     }
     environment_variable {
-      name = "ROLE_ARN"
-      value = data.aws_iam_role.main.arn
+      name = "DEPLOY_ROLE_ARN"
+      value = aws_iam_role.deploy_role.arn
     }
   }
-
   source {
     type      = "CODEPIPELINE"
     buildspec = "buildspec.yml"
