@@ -3,7 +3,7 @@
 resource "aws_codebuild_project" "main" {
   name          = "demo-build"
   build_timeout = "5"
-  service_role  = aws_iam_role.deploy_role.arn
+  service_role  = data.aws_iam_role.main.arn
 
   artifacts {
     type = "CODEPIPELINE"
