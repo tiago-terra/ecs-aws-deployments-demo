@@ -18,14 +18,16 @@ spec:
     spec:
       containers:
         - image: $ECR_REPO:$IMAGE_TAG
-          name: blue-container
+          name: ${TYPE}-container
           imagePullPolicy: Always
           resources: {}
           env:
             - name: DEPLOY_TYPE
-              value: $TYPE
+              value: ${TYPE}
             - name: DEPLOY_COLOR
-              value: $TYPE
+              value: ${TYPE}
+            - name: COMMIT_VERSION
+              value: ${IMAGE_TAG}
           ports:
             - name: web
               containerPort: 80
