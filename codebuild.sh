@@ -50,7 +50,8 @@ function sub_vars () {
   
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-  envsubst "\$TYPE" < "$SERVICE_FILE" > "tmp_${SERVICE_FILE}"
+  envsubst "\$TYPE" < $SERVICE_FILE > "tmp_${SERVICE_FILE}"
+  envsubst "\$DEPLOY_ROLE_ARN" < aws-auth_template.yml > aws-auth.yml
 }
 
 function kube_deploy () {
@@ -58,8 +59,7 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  kubectl && cat "${DEPLOY_TYPE}_deployment.yml"
-
+  kubectl apply -f tmp_aws
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "tmp_service.yml"
 
@@ -68,7 +68,7 @@ function kube_deploy () {
   fi
 
   echo "Cleaning k8s files..."
-  rm -rf *_deployment.yml tmp*
+  rm -rf *_deployment.yml tmp* *template*
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
