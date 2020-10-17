@@ -2,17 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ${TYPE}-deployment
-  labels:
-    app: ${TYPE}-app
 spec:
   replicas: 2
-  selector:
-    matchLabels:
-      name: web-container
-      app: ${TYPE}-app
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: ${TYPE}-app
         name: web-container
