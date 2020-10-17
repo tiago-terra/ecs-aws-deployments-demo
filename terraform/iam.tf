@@ -23,7 +23,7 @@ resource "aws_iam_policy" "eks_admin" {
 }
 
 locals {
-  deploy_policies = concat(var.policies, [aws_iam_policy.eks_admin.arn ])
+  deploy_policies = concat(var.policies, [aws_iam_policy.eks_admin.arn])
 }
 
 # IAM role - attach role policies
@@ -73,7 +73,6 @@ resource "aws_iam_role" "deploy_role" {
   assume_role_policy = data.aws_iam_policy_document.deploy_role.json
   force_detach_policies = true
 }
-
 
 # IAM role - attach role policies
 resource "aws_iam_role_policy_attachment" "deploy_policy_attachment" {

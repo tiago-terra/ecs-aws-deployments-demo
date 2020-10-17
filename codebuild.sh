@@ -62,7 +62,7 @@ function kube_deploy () {
   kubectl apply -f tmp_service.yml
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    kubectl delete -f "${CODEBUILD_SRC_DIR}/blue_deployment.yml"
+    kubectl delete deployment blue-deployment
   fi
 
   echo "Cleaning k8s files..."

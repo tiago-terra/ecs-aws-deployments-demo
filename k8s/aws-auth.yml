@@ -8,4 +8,8 @@ data:
     - rolearn: ${DEPLOY_ROLE_ARN}
       username: deploy_role
       groups:
-        - system:masters
+    - rolearn: ${NODE_ROLE_ARN}
+      username: system:node:{{EC2PrivateDNSName}}
+      groups:
+        - system:bootstrappers
+        - system:nodes

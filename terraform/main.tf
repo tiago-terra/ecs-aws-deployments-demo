@@ -6,12 +6,15 @@ terraform {
   backend "s3" {}
 }
 
-module "cloud_setup" {
-  source = "./cloud_setup"
+# CodeCommit - Create repo
+resource "aws_codecommit_repository" "main" {
+  repository_name = var.project_name
+  description     = "Repository ${var.project_name}"
+  default_branch  = "master"
+}
 
-  public_key = var.public_key
-  project_name = var.project_name
-  role_name = var.role_name
-  user_name = var.user_name
-  region = var.region
+# ECR - Create repo
+resource "aws_ecr_repository" "main" {
+  name                 = "nginx_ds"
+  image_tag_mutability = "MUTABLE"
 }

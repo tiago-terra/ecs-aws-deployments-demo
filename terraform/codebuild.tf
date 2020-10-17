@@ -1,5 +1,3 @@
-
-
 resource "aws_codebuild_project" "main" {
   name          = "demo-build"
   build_timeout = "5"
@@ -28,13 +26,14 @@ resource "aws_codebuild_project" "main" {
     privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
   
+  
     environment_variable {
       name = "ECR_REPO"
       value = aws_ecr_repository.main.repository_url
     }
     environment_variable {
       name = "EKS_CLUSTER_NAME"
-      value = aws_eks_cluster.main.name
+      value = data.aws_eks_cluster.cluster.name
     }
     environment_variable {
       name = "DEPLOY_ROLE_ARN"

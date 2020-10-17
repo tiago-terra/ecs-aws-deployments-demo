@@ -119,7 +119,7 @@ resource "aws_codepipeline" "bluegreen" {
       configuration = {
         NotificationArn = aws_sns_topic.main.arn
         CustomData = "Check cluster is up"
-        ExternalEntityLink = aws_eks_cluster.main.endpoint
+        ExternalEntityLink = data.aws_eks_cluster.cluster.endpoint
       }
     }
   }
