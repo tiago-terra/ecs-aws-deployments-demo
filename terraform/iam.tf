@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "deploy_role" {
 
 # Create role
 resource "aws_iam_role" "deploy_role" {
-  name = "deploy_role"
+  name = "k8srole"
   assume_role_policy = data.aws_iam_policy_document.deploy_role.json
   force_detach_policies = true
 }

@@ -3,15 +3,19 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "tf_state_bucket" {
-  bucket = "terraform-up-and-running-locks"
+  bucket = var.tf_bucket
 
   versioning {
     enabled = true
   }
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 
 resource "aws_dynamodb_table" "terraform_locks" {
-  name         = var.tf_lock_table
+  name         = "terraform-up-and-running-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {

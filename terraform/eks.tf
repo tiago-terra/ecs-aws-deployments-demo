@@ -30,7 +30,7 @@ module "eks" {
   cluster_iam_role_name = aws_iam_role.deploy_role.name
   subnets         = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
-  manage_cluster_iam_resources = true
+  manage_cluster_iam_resources = false
   map_roles       = local.roles_to_map
   map_users       = local.users_to_map
   worker_groups = [
