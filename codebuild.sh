@@ -58,9 +58,8 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  kubectl apply -f aws-auth.yml
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
-  kubectl apply -f "tmp_service.yml"
+  kubectl apply -f tmp_service.yml
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete -f "${CODEBUILD_SRC_DIR}/blue_deployment.yml"

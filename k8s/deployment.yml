@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - image: $ECR_REPO:$IMAGE_TAG
-          name: ${TYPE}-container
+          name: blue-container
           imagePullPolicy: Always
           resources: {}
           env:
