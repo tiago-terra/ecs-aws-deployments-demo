@@ -7,18 +7,37 @@ data "aws_iam_role" "main" {
   name = var.role_name
 }
 
+# Create EKSAdmin policy
+data "aws_iam_policy_document" "eks_admin" {
+  statement {
+    actions = ["eks:*"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "eks_admin" {
+  name        = "AmazonEKSAdminPolicy"
+  path        = "/"
+  description = "EKS Administrator policy"
+  policy = data.aws_iam_policy_document.eks_admin.json
+}
+
+locals {
+  deploy_policies = concat(var.policies, [aws_iam_policy.eks_admin.arn ])
+}
+
 # IAM role - attach role policies
 resource "aws_iam_role_policy_attachment" "role_policy" {
-  count      = length(var.build_policies)
+  count      = length(local.deploy_policies)
   role       = data.aws_iam_role.main.name
-  policy_arn = element(var.build_policies, count.index)
+  policy_arn = element(local.deploy_policies, count.index)
 }
 
 # Attach IAM User build_policies
 resource "aws_iam_user_policy_attachment" "user_attachment" {
-  count      = length(var.build_policies)
+  count      = length(local.deploy_policies)
   user       = data.aws_iam_user.main.user_name
-  policy_arn = element(var.build_policies, count.index)
+  policy_arn = element(local.deploy_policies, count.index)
 }
 
 # IAM User - attach public key
@@ -37,20 +56,6 @@ resource "aws_iam_user_ssh_key" "main" {
 # CODEBUILD/EKS
 #
 
-# Create EKSAdmin policy
-data "aws_iam_policy_document" "eks_admin" {
-  statement {
-    actions = ["eks:*"]
-    resources = ["*"]
-  }
-}
-
-resource "aws_iam_policy" "eks_admin" {
-  name        = "AmazonEKSAdminPolicy"
-  path        = "/"
-  description = "EKS Administrator policy"
-  policy = data.aws_iam_policy_document.eks_admin.json
-}
 
 # Create assume role trust
 data "aws_iam_policy_document" "deploy_role" {
@@ -60,6 +65,7 @@ data "aws_iam_policy_document" "deploy_role" {
       type = "Service"
       identifiers = ["cloudwatch.amazonaws.com","codebuild.amazonaws.com","eks.amazonaws.com" ]
     }
+    
   }
 }
 
@@ -69,9 +75,6 @@ resource "aws_iam_role" "deploy_role" {
   assume_role_policy = data.aws_iam_policy_document.deploy_role.json
 }
 
-locals {
-  deploy_policies = concat(var.deploy_policies, [aws_iam_policy.eks_admin.arn ])
-}
 
 # IAM role - attach role policies
 resource "aws_iam_role_policy_attachment" "deploy_policy_attachment" {
