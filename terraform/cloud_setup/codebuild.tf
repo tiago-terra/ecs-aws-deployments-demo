@@ -36,6 +36,11 @@ resource "aws_codebuild_project" "main" {
       name = "EKS_CLUSTER_NAME"
       value = aws_eks_cluster.main.name
     }
+    environment_variable {
+      name = "DEPLOY_ROLE_ARN"
+      value = aws_iam_role.deploy_role.arn
+    }
+    
   }
   source {
     type      = "CODEPIPELINE"
