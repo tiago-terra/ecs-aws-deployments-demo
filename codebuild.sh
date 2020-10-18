@@ -9,7 +9,6 @@ export AWS_IAM_AUTH="https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-0
 if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
 
 function build_push_ecr () {
-  echo "test"
   #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
 
@@ -22,17 +21,12 @@ function build_push_ecr () {
 }
 
 function tools_install () {
-  echo "Downloading kubectl and iam-authenticator..."
-  curl -o kubectl $KUBE_URL
-  curl -sS -o aws-iam-authenticator $AUTHENTICATOR_URL
-
-  chmod +x ./kubectl ./aws-iam-authenticator
+  echo "Downloading kubectl..."
+  curl -o kubectl $KUBE_URL && chmod +x ./kubectl
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
-  kubectl version --short --client
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
   source ~/.bashrc
-
   echo "kubectl installed!"
 }
 
@@ -44,13 +38,9 @@ function sub_vars () {
 
   for i in blue green rolling
     do
-      export TYPE="$i" && export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-      envsubst "$vars_string" < "$DEPLOY_FILE" > "${TYPE}_$DEPLOY_FILE"
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g;s|\${ECR_REPO}|$ECR_REPO|g;s|\${IMAGE_TAG}|$IMAGE_TAG|g" $DEPLOY_FILE > "${i}_$DEPLOY_FILE"
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g" $SERVICE_FILE > "${i}_$SERVICE_FILE"
     done
-  
-  export TYPE="$1"
-  export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-  envsubst "\$TYPE" < $SERVICE_FILE > "${TYPE}_${SERVICE_FILE}"
 }
 
 function kube_wait () {

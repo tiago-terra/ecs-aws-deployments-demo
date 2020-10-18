@@ -15,6 +15,6 @@ resource "aws_codecommit_repository" "main" {
 
 # ECR - Create repo
 resource "aws_ecr_repository" "main" {
-  name                 = "nginx_ds"
+  name                 = "nginx_demo"
   image_tag_mutability = "MUTABLE"
 }

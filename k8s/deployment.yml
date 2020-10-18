@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${TYPE}-deployment
+  name: ${DEPLOY_TYPE}-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       name: web-container
-      app: ${TYPE}-app
+      app: ${DEPLOY_TYPE}-app
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: ${TYPE}-app
+        app: ${DEPLOY_TYPE}-app
         name: web-container
     spec:
       containers:
@@ -22,9 +22,9 @@ spec:
           resources: {}
           env:
             - name: DEPLOY_TYPE
-              value: ${TYPE}
+              value: ${DEPLOY_TYPE}
             - name: DEPLOY_COLOR
-              value: ${TYPE}
+              value: ${DEPLOY_TYPE}
             - name: COMMIT_VERSION
               value: ${IMAGE_TAG}
           ports:

@@ -1,6 +1,6 @@
 # Build S3 bucket for CodePipeline artifact storage
 resource "aws_s3_bucket" "artifacts" {
-  bucket = "artifacts-${var.project_name}"
+  bucket = "${var.project_name}-artifacts"
   acl    = "private"
   force_destroy = true
 
@@ -9,12 +9,8 @@ resource "aws_s3_bucket" "artifacts" {
   }
 }
 
-resource "aws_sns_topic" "main" {
-  name = "demo-approval"
-}
-
 resource "aws_codepipeline" "rolling" {
-  name     = "demo-rolling"
+  name     = "${var.project}-rolling"
   role_arn = data.aws_iam_role.main.arn
 
   artifact_store {
@@ -61,7 +57,7 @@ resource "aws_codepipeline" "rolling" {
 }
 
 resource "aws_codepipeline" "bluegreen" {
-  name     = "demo-bluegreen"
+  name     = "${var.project_name}-bluegreen"
   role_arn = data.aws_iam_role.main.arn
 
   artifact_store {

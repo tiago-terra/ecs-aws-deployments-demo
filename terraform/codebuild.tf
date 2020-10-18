@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "main" {
-  name          = "demo-build"
+  name          = var.project
   build_timeout = "5"
   service_role  = data.aws_iam_role.main.arn
 

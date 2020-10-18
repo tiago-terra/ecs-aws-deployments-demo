@@ -25,7 +25,7 @@ provider "kubernetes" {
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = "eks-cluster"
+  cluster_name    = var.project_name
   cluster_version = "1.15"
   cluster_iam_role_name = aws_iam_role.deploy_role.name
   subnets         = module.vpc.public_subnets
@@ -33,13 +33,24 @@ module "eks" {
   manage_cluster_iam_resources = false
   map_roles       = local.roles_to_map
   map_users       = local.users_to_map
-  worker_groups = [
-    {
-      instance_type = "t2.micro"
-      asg_max_size  = 4
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
+  node_groups = {
+    workers = {
+      desired_capacity = 2
+      max_capacity     = 4
+      min_capacity     = 1
+      source_security_group_ids	= [aws_security_group.worker_group_mgmt.id]
+
+      instance_type = "t3.nano"
     }
-  ]
+  }
+
+  # worker_groups = [
+  #   {
+  #     instance_type = "t2.micro"
+  #     asg_max_size  = 4
+  #     additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
+  #   }
+  # ]
 }
 
 data "aws_eks_cluster" "cluster" {
