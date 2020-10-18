@@ -50,7 +50,7 @@ function sub_vars () {
   
   export TYPE="$1"
   export -p >env_var.sh && . env_var.sh && rm -rf env_var.sh
-  envsubst "\$TYPE" < $SERVICE_FILE > "tmp_${SERVICE_FILE}"
+  envsubst "\$TYPE" < $SERVICE_FILE > "${TYPE}_${SERVICE_FILE}"
 }
 
 function kube_wait () {
@@ -66,11 +66,11 @@ function kube_deploy () {
   sub_vars $DEPLOY_TYPE
 
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" && kube_wait "${DEPLOY_TYPE}-app"
-  if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
+  kubectl apply -f tmp_service.yml
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml && kubectl apply -f service_green.yml
-    kubectl delete blue-deployment
+    kubectl delete deployment blue_deployment
+    kubectl delete service blue-lb
   fi
 
   echo "Cleaning k8s files..."
