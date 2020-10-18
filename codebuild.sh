@@ -53,33 +53,26 @@ function sub_vars () {
   envsubst "\$TYPE" < $SERVICE_FILE > "tmp_${SERVICE_FILE}"
 }
 
+function kube_wait () {
+    while [[ $(kubectl get pods -l app=$1 -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; 
+    do 
+      echo "waiting for pod" && sleep 1; 
+    done
+}
+
 function kube_deploy () {
 
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  if [ $DEPLOY_TYPE == 'rolling' ]; then
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" kube_wait "${DEPLOY_TYPE}-app"
 
-    kubectl apply -f rolling_deployment.yml
-    kubectl apply -f tmp_service.yml
-  fi
-
-  if [ $DEPLOY_TYPE == 'blue' ]; then 
-    kubectl apply -f blue_deployment.yml
-    kubectl apply -f tmp_service.yml
-  fi
+  if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    # EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
-
-    kubectl apply -f green_deployment.yml
-    while [[ $(kubectl get pods -l app=green-app -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; 
-    do 
-      echo "waiting for pod" && sleep 1; 
-    done
-
     sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
     kubectl apply -f service_green.yml
+    kubectl delete blue-deployment
   fi
 
   echo "Cleaning k8s files..."
