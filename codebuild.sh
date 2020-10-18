@@ -65,8 +65,8 @@ function kube_deploy () {
     EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
     curl -s http://$EXTERNAL_HOST
 
-    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
-    kubectl apply -f service_green.yml
+    sed -e "s/\blue/green/g" service.yml > service_green.yml
+    # kubectl apply -f service_green.yml
   fi
 
   echo "Cleaning k8s files..."
