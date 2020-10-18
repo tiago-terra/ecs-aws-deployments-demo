@@ -65,13 +65,11 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" kube_wait "${DEPLOY_TYPE}-app"
-
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" && kube_wait "${DEPLOY_TYPE}-app"
   if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
-    kubectl apply -f service_green.yml
+    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml && kubectl apply -f service_green.yml
     kubectl delete blue-deployment
   fi
 
