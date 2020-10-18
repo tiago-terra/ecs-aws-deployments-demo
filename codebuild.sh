@@ -70,14 +70,16 @@ function kube_deploy () {
   fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+    # EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
 
     kubectl apply -f green_deployment.yml
-    curl -s http://$EXTERNAL_HOST
+    while [[ $(kubectl get pods -l app=green-app -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; 
+    do 
+      echo "waiting for pod" && sleep 1; 
+    done
 
     sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
-
-
+    kubectl apply -f service_green.yml
   fi
 
   echo "Cleaning k8s files..."
