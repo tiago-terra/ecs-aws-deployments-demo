@@ -58,15 +58,26 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   sub_vars $DEPLOY_TYPE
 
-  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
-  if [ $DEPLOY_TYPE != 'green' ]; then kubectl apply -f tmp_service.yml; fi
+  if [ $DEPLOY_TYPE == 'rolling' ]; then
+
+    kubectl apply -f rolling_deployment.yml
+    kubectl apply -f tmp_service.yml
+  fi
+
+  if [ $DEPLOY_TYPE == 'blue' ]; then 
+    kubectl apply -f blue_deployment.yml
+    kubectl apply -f tmp_service.yml
+  fi
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     EXTERNAL_HOST=$(kubectl get svc demo-lb -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")
+    kubectl apply -f blue_deployment.yml
+
     curl -s http://$EXTERNAL_HOST
 
-    sed -e "s/\blue/green/g" service.yml > service_green.yml
-    # kubectl apply -f service_green.yml
+    sed -e "s/\${TYPE}/green/g" service.yml > service_green.yml
+
+
   fi
 
   echo "Cleaning k8s files..."
