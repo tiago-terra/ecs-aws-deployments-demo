@@ -16,7 +16,7 @@ spec:
         name: web-container
     spec:
       containers:
-        - image: $ECR_REPO:$IMAGE_TAG
+        - image: ${ECR_REPO}:${IMAGE_TAG}
           name: web-container
           imagePullPolicy: Always
           resources: {}

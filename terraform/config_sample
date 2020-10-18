@@ -1,0 +1,5 @@
+bucket         = "my-s3-bucket"
+dynamodb_table = "terraform-lock-table"
+encrypt        = true
+key            = "global/s3/terraform.tfstate"
+region         = "eu-west-2"

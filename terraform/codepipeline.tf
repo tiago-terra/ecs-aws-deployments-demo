@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "artifacts" {
 }
 
 resource "aws_codepipeline" "rolling" {
-  name     = "${var.project}-rolling"
+  name     = "${var.project_name}-rolling"
   role_arn = data.aws_iam_role.main.arn
 
   artifact_store {

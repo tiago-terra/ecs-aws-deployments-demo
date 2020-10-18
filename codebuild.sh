@@ -66,7 +66,7 @@ function kube_deploy () {
   echo "Cleaning k8s files..."
   rm -rf $DEPLOY_TYPE_*
 }
-
+# Main operations
 if [ $1 == 'install' ]; then tools_install; fi
 if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
 if [ $1 == 'deploy' ]; then kube_deploy; fi

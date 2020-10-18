@@ -1,8 +1,11 @@
 # AWS Deployment Strategies Use Case
 
-Technical use case project aimed at demonstrating different deployment strategies within AWS.
+Technical use case project aimed at demonstrating different deployment strategies within AWS:
 
-## Tools used
+- Blue/Green Deployments
+- Rolling Deployments
+
+# Tools used
 
 - [AWS CodeCommit](https://aws.amazon.com/codecommit/)
 - [AWS CodeBuild](https://aws.amazon.com/codebuild/)
@@ -11,19 +14,23 @@ Technical use case project aimed at demonstrating different deployment strategie
 - [AWS EKS](https://aws.amazon.com/eks/)
 - Docker
 - Terraform
+- S3 bucket - to store the state
+- DynamoDB - to manage locks
 
-## Deployments
+# Terraform
 
-- Blue/Green Deployment
-- Rolling Deployment
+## Initializing Terraform remote state
 
-## Terraform
+`cd terraform/cloud_init && terraform apply -auto-approve`
 
-#### Remote State
+## Initializing terraform with backend config
 
-- **S3 bucket** - to store the state
-- **DynamoDB** - to manage locks
+- Create tfvars file from sample
+  `cd terraform && mv config_sample config.tfvars`
+- edit the newly created config.tfvars file
+- Initialize terraform:
+  `terraform init --backend-config=config.tfvars`
 
-## Docker
+## Create infrastructure
 
-## Kubernetes
+`cd terraform && terraform apply -auto-approve`
