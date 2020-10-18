@@ -66,7 +66,7 @@ function kube_deploy () {
   sub_vars $DEPLOY_TYPE
 
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" && kube_wait "${DEPLOY_TYPE}-app"
-  kubectl apply -f tmp_service.yml
+  kubectl apply -f "${DEPLOY_TYPE}_service.yml"
 
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete deployment blue_deployment
@@ -74,7 +74,7 @@ function kube_deploy () {
   fi
 
   echo "Cleaning k8s files..."
-  rm -rf *_deployment.yml tmp* *template*
+  rm -rf $DEPLOY_TYPE_*
 }
 
 if [ $1 == 'install' ]; then tools_install; fi
