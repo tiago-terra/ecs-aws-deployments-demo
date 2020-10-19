@@ -5,17 +5,26 @@ Technical use case project aimed at demonstrating different deployment strategie
 - Blue/Green Deployments
 - Rolling Deployments
 
-# Tools used
+#Tools
 
-- [AWS CodeCommit](https://aws.amazon.com/codecommit/)
-- [AWS CodeBuild](https://aws.amazon.com/codebuild/)
-- [AWS CodePipeline](https://aws.amazon.com/codepipeline/)
-- [AWS ECR](https://aws.amazon.com/ecr/)
-- [AWS EKS](https://aws.amazon.com/eks/)
-- Docker
-- Terraform
-- S3 bucket - to store the state
-- DynamoDB - to manage locks
+## Required locally
+
+- terraform
+- kubectl
+
+## Tools used
+
+| Tool                                                     |
+| -------------------------------------------------------- |
+| [AWS CodeCommit](https://aws.amazon.com/codecommit/)     |
+| [AWS CodeBuild](https://aws.amazon.com/codebuild/)       |
+| [AWS CodePipeline](https://aws.amazon.com/codepipeline/) |
+| [AWS ECR](https://aws.amazon.com/ecr/)                   |
+| [AWS EKS](https://aws.amazon.com/eks/)                   |
+| Docker                                                   |
+| Terraform                                                |
+| S3 bucket - to store the state                           |
+| DynamoDB - to manage locks                               |
 
 # Terraform
 
@@ -34,3 +43,8 @@ Technical use case project aimed at demonstrating different deployment strategie
 ## Create infrastructure
 
 `cd terraform && terraform apply -auto-approve`
+
+# Kubernetes
+
+For the purposes of testing the deployments, an EKS cluster is setup. Alongside, a node group is created.
+Testing the cluster is possible from the CLI

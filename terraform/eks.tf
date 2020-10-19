@@ -27,7 +27,7 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.project_name
   cluster_version = "1.15"
-  cluster_iam_role_name = aws_iam_role.deploy_role.name
+  cluster_iam_role_name = data.aws_iam_role.deploy_role.name
   subnets         = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
   manage_cluster_iam_resources = false
@@ -40,7 +40,7 @@ module "eks" {
       min_capacity     = 1
       source_security_group_ids	= [aws_security_group.worker_group_mgmt.id]
 
-      instance_type = "t3.nano"
+      instance_type = "t3.micro"
     }
   }
 }
