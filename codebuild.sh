@@ -47,7 +47,14 @@ function kube_deploy () {
 
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" #&& kube_wait "${DEPLOY_TYPE}-app"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
+
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  while [ -z $EXTERNAL_IP ]
+  do
+    echo "Waiting for External IP to be allocated..."
+    EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  done
+  
   kube_wait $EXTERNAL_IP
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete deployment blue-deployment
@@ -60,7 +67,7 @@ function kube_deploy () {
 }
 
 function kube_wait () {
-  echo "Waiting for $1 to be up"
+  echo "Waiting for $1 to be up..."
   until $(curl --output /dev/null --silent --head --fail $1); do
     printf '.'
     sleep 5

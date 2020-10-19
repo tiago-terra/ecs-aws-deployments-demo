@@ -17,3 +17,7 @@ phases:
     commands:
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy
+      - printf '{"EXTERNAL_IP":"%s"}' "$EXTERNAL_IP" > build.json
+artifacts:
+  files: build.json
+  discard-paths: yes

@@ -46,6 +46,7 @@ resource "aws_codepipeline" "rolling" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["SourceArtifact"]
+      output_artifacts = ["BuildOutput"]
       version          = "1"
 
       configuration = {
@@ -93,6 +94,7 @@ resource "aws_codepipeline" "bluegreen" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["SourceArtifact"]
+      output_artifacts = ["BuildOutput"]
       version          = "1"
 
       configuration = {
@@ -109,12 +111,13 @@ resource "aws_codepipeline" "bluegreen" {
       name     = "Approval"
       category = "Approval"
       owner    = "AWS"
+      input_artifacts  = ["BuildOutput"]
       provider = "Manual"
       version  = "1"
     
       configuration = {
         CustomData = "Check cluster is up"
-        ExternalEntityLink = data.aws_eks_cluster.cluster.endpoint
+        ExternalEntityLink = "BuildOutput::build.json"
       }
     }
   }
