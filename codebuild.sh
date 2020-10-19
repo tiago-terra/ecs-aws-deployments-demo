@@ -15,7 +15,7 @@ function build_push_ecr () {
   echo "Docker image build!"
 
   echo "Pushing image with tag :$1 to repo $2..."
-  docker push $IMAGE_URI > /dev/null
+  docker push $IMAGE_URI
   echo "Image pushed to ECR!"
 }
 
