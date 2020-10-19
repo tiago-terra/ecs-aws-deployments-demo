@@ -52,7 +52,7 @@ function kube_deploy () {
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
 
   if [ $DEPLOY_TYPE == 'green' ]; then
-    kubectl delete -f blue-deployment
+    kubectl delete deployment blue-deployment
     kubectl delete service blue-lb
   fi
 
