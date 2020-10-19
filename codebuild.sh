@@ -11,7 +11,7 @@ function build_push_ecr () {
   #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
   echo "Building docker image..."
-  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2 > /dev/null
+  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2
   echo "Docker image build!"
 
   echo "Pushing image with tag :$1 to repo $2..."
@@ -21,7 +21,7 @@ function build_push_ecr () {
 
 function tools_install () {
   echo "Downloading kubectl..."
-  curl -o kubectl $KUBE_URL && chmod +x ./kubectl > /dev/null
+  curl -o kubectl $KUBE_URL && chmod +x ./kubectl
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
@@ -44,7 +44,7 @@ function kube_sub_vars () {
 
 function kube_deploy () {
   # $1 - manifest path
-  cd $CODEBUILD_SRC_DIR/k8s
+  cd $1
   kube_sub_vars $DEPLOY_TYPE
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
@@ -55,6 +55,7 @@ function kube_deploy () {
     echo "Waiting for External IP to be allocated..."
     EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   done
+
   kube_wait $EXTERNAL_IP
   
   if [ $DEPLOY_TYPE == 'green' ]; then
