@@ -11,7 +11,6 @@ data "aws_iam_role" "deploy_role" {
   name = "k8srole"
 }
 
-
 # Create EKSAdmin policy
 data "aws_iam_policy_document" "eks_admin" {
   statement {
@@ -32,9 +31,16 @@ locals {
 }
 
 # IAM role - attach role policies
-resource "aws_iam_role_policy_attachment" "role_policy" {
+resource "aws_iam_role_policy_attachment" "service_role" {
   count      = length(local.deploy_policies)
   role       = data.aws_iam_role.main.name
+  policy_arn = element(local.deploy_policies, count.index)
+}
+
+# IAM role - attach role policies
+resource "aws_iam_role_policy_attachment" "deploy_role" {
+  count      = length(local.deploy_policies)
+  role       = data.aws_iam_role.deploy_role.name
   policy_arn = element(local.deploy_policies, count.index)
 }
 

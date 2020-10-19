@@ -5,7 +5,7 @@ Technical use case project aimed at demonstrating different deployment strategie
 - Blue/Green Deployments
 - Rolling Deployments
 
-#Tools
+# Tools
 
 ## Required locally
 
@@ -15,7 +15,7 @@ Technical use case project aimed at demonstrating different deployment strategie
 ## Tools used
 
 | Tool                                                     |
-| -------------------------------------------------------- |
+| :------------------------------------------------------- |
 | [AWS CodeCommit](https://aws.amazon.com/codecommit/)     |
 | [AWS CodeBuild](https://aws.amazon.com/codebuild/)       |
 | [AWS CodePipeline](https://aws.amazon.com/codepipeline/) |
@@ -40,6 +40,16 @@ Technical use case project aimed at demonstrating different deployment strategie
 - Initialize terraform:
   `terraform init --backend-config=config.tfvars`
 
+## Inputs
+
+| Variable     | Required | Description                                  |
+| :----------- | :------- | :------------------------------------------- |
+| region       | true     | AWS region                                   |
+| user_name    | true     | Service user's name                          |
+| role_name    | true     | Service role name                            |
+| project_name | true     | Project name to be applied to resources      |
+| policies     | false    | IAM policies to apply to service users/roles |
+
 ## Create infrastructure
 
 `cd terraform && terraform apply -auto-approve`
@@ -47,4 +57,5 @@ Technical use case project aimed at demonstrating different deployment strategie
 # Kubernetes
 
 For the purposes of testing the deployments, an EKS cluster is setup. Alongside, a node group is created.
-Testing the cluster is possible from the CLI
+Testing the cluster is possible from the CLI. To configure kubectl connection to cluster:
+`aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME`

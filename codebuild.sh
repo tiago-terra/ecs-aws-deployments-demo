@@ -46,9 +46,9 @@ function kube_deploy () {
   cd $CODEBUILD_SRC_DIR/k8s
   kube_sub_vars $DEPLOY_TYPE
 
-  ehco "kubectl - applying "
+  echo "kubectl - applying "
 
-  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" && kube_wait "${DEPLOY_TYPE}-app"
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" #&& kube_wait "${DEPLOY_TYPE}-app"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
 
   if [ $DEPLOY_TYPE == 'green' ]; then
