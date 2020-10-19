@@ -44,7 +44,7 @@ function kube_sub_vars () {
 
 function kube_deploy () {
   # $1 - manifest path
-  cd $1
+  cd "${CODEBUILD_SRC_DIR}/k8s"
   kube_sub_vars $DEPLOY_TYPE
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
@@ -79,4 +79,4 @@ function kube_wait () {
 # Main operations
 if [ $1 == 'install' ]; then tools_install; fi
 if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
-if [ $1 == 'deploy' ]; then kube_deploy $CODEBUILD_SRC_DIR/k8s; fi
+if [ $1 == 'deploy' ]; then kube_deploy; fi
