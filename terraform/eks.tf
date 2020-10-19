@@ -35,7 +35,7 @@ module "eks" {
   map_users       = local.users_to_map
   node_groups = {
     workers = {
-      desired_capacity = 2
+      desired_capacity = 4
       max_capacity     = 4
       min_capacity     = 1
       source_security_group_ids	= [aws_security_group.worker_group_mgmt.id]
