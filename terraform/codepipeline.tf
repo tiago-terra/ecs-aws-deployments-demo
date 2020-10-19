@@ -94,7 +94,6 @@ resource "aws_codepipeline" "bluegreen" {
       owner            = "AWS"
       provider         = "CodeBuild"
       input_artifacts  = ["SourceArtifact"]
-      output_artifacts = ["BuildOutput"]
       version          = "1"
 
       configuration = {
@@ -111,13 +110,12 @@ resource "aws_codepipeline" "bluegreen" {
       name     = "Approval"
       category = "Approval"
       owner    = "AWS"
-      input_artifacts  = ["BuildOutput"]
       provider = "Manual"
       version  = "1"
     
       configuration = {
         CustomData = "Check cluster is up"
-        ExternalEntityLink = "BuildOutput::build.json"
+        ExternalEntityLink = "aws eks update-kubeconfig --name ${data.aws_eks_cluster.cluster.name}"
       }
     }
   }
@@ -136,7 +134,6 @@ resource "aws_codepipeline" "bluegreen" {
       configuration = {
         ProjectName = aws_codebuild_project.main.name
         EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"green\"}]"
-
       }
     }
   }

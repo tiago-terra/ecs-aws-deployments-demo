@@ -11,15 +11,17 @@ function build_push_ecr () {
   #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
   echo "Building docker image..."
-  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2
+  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2 > /dev/null
+  echo "Docker image build!"
+
   echo "Pushing image with tag :$1 to repo $2..."
-  docker push $IMAGE_URI  
+  docker push $IMAGE_URI > /dev/null
   echo "Image pushed to ECR!"
 }
 
 function tools_install () {
   echo "Downloading kubectl..."
-  curl -o kubectl $KUBE_URL && chmod +x ./kubectl
+  curl -o kubectl $KUBE_URL && chmod +x ./kubectl > /dev/null
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
@@ -35,8 +37,8 @@ function kube_sub_vars () {
 
   for i in blue green rolling
     do
-      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g;s|\${ECR_REPO}|$ECR_REPO|g;s|\${IMAGE_TAG}|$IMAGE_TAG|g" $DEPLOY_FILE > "${i}_$DEPLOY_FILE"
-      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g" $SERVICE_FILE > "${i}_$SERVICE_FILE"
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g;s|\${ECR_REPO}|$ECR_REPO|g;s|\${IMAGE_TAG}|$IMAGE_TAG|g" $DEPLOY_FILE > "${i}_$DEPLOY_FILE" > /dev/null
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g" $SERVICE_FILE > "${i}_$SERVICE_FILE" > /dev/null
     done
 }
 
@@ -44,8 +46,7 @@ function kube_deploy () {
   # $1 - manifest path
   cd $CODEBUILD_SRC_DIR/k8s
   kube_sub_vars $DEPLOY_TYPE
-
-  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" #&& kube_wait "${DEPLOY_TYPE}-app"
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
 
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
@@ -54,8 +55,8 @@ function kube_deploy () {
     echo "Waiting for External IP to be allocated..."
     EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   done
-  
   kube_wait $EXTERNAL_IP
+  
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete deployment blue-deployment
     kubectl delete service blue-lb
