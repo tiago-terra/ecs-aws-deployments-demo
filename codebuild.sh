@@ -11,7 +11,7 @@ function build_push_ecr () {
   #Args - ECR REPO, IMAGE_TAG
   export IMAGE_URI="$1:$2"
   echo "Building docker image..."
-  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2
+  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2 > /dev/null
   echo "Docker image build!"
 
   echo "Pushing image with tag :$1 to repo $2..."
@@ -21,7 +21,7 @@ function build_push_ecr () {
 
 function tools_install () {
   echo "Downloading kubectl..."
-  curl -o kubectl $KUBE_URL && chmod +x ./kubectl
+  curl -o kubectl $KUBE_URL && chmod +x ./kubectl > /dev/null
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
   PATH=$PATH:$HOME/bin
   echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
