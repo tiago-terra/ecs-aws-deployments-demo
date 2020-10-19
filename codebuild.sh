@@ -37,8 +37,8 @@ function kube_sub_vars () {
 
   for i in blue green rolling
     do
-      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g;s|\${ECR_REPO}|$ECR_REPO|g;s|\${IMAGE_TAG}|$IMAGE_TAG|g" $DEPLOY_FILE > "${i}_$DEPLOY_FILE" > /dev/null
-      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g" $SERVICE_FILE > "${i}_$SERVICE_FILE" > /dev/null
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g;s|\${ECR_REPO}|$ECR_REPO|g;s|\${IMAGE_TAG}|$IMAGE_TAG|g" $DEPLOY_FILE > "${i}_$DEPLOY_FILE"
+      sed "s|\${DEPLOY_TYPE}|$DEPLOY_TYPE|g" $SERVICE_FILE > "${i}_$SERVICE_FILE"
     done
 }
 
