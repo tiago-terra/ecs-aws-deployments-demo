@@ -42,15 +42,13 @@ function kube_sub_vars () {
 
 function kube_deploy () {
   # $1 - manifest path
-
   cd $CODEBUILD_SRC_DIR/k8s
   kube_sub_vars $DEPLOY_TYPE
 
-  echo "kubectl - applying "
-
   kubectl apply -f "${DEPLOY_TYPE}_deployment.yml" #&& kube_wait "${DEPLOY_TYPE}-app"
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
-
+  EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  kube_wait $EXTERNAL_IP
   if [ $DEPLOY_TYPE == 'green' ]; then
     kubectl delete deployment blue-deployment
     kubectl delete service blue-lb
@@ -62,10 +60,11 @@ function kube_deploy () {
 }
 
 function kube_wait () {
-    while [[ $(kubectl get pods -l app=$1 -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; 
-    do 
-      echo "waiting for pod $1..." && sleep 1; 
-    done
+  echo "Waiting for $1 to be up"
+  until $(curl --output /dev/null --silent --head --fail $1); do
+    printf '.'
+    sleep 5
+  done
 }
 
 # Main operations
