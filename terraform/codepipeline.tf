@@ -114,8 +114,8 @@ resource "aws_codepipeline" "bluegreen" {
       version  = "1"
     
       configuration = {
-        CustomData = "Check cluster is up"
-        ExternalEntityLink = "aws eks update-kubeconfig --name ${data.aws_eks_cluster.cluster.name}"
+        CustomData = "Check cluster is up - aws eks update-kubeconfig --name ${data.aws_eks_cluster.cluster.name} && kubectl get svc"
+        ExternalEntityLink = ""
       }
     }
   }
