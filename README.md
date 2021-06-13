@@ -5,12 +5,15 @@ Technical use case project aimed at demonstrating different deployment strategie
 - Blue/Green Deployments
 - Rolling Deployments
 
-# Tools 
+# Tools
+
 ## Prerequisites
+
 - An IAM user account
 - The AWS credentials are setup in the user path
 
 ## Required locally
+
 - terraform
 - kubectl
 - helm
@@ -38,7 +41,8 @@ Technical use case project aimed at demonstrating different deployment strategie
 ## Initializing terraform with backend config
 
 - Create tfvars file from sample
-  `cd terraform && mv config_sample config.tfvars`
+  > > cd terraform &&
+  > > mv config_sample config.tfvars
 - edit the newly created config.tfvars file
 - Initialize terraform:
   `terraform init --backend-config=config.tfvars`
@@ -54,7 +58,6 @@ Technical use case project aimed at demonstrating different deployment strategie
 | policies     | false    | IAM policies to apply to service users/roles |
 
 ## Create infrastructure
-
 
 # Kubernetes
 
