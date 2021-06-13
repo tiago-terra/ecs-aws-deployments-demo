@@ -1,3 +1,11 @@
+# CodeCommit
+resource "aws_codecommit_repository" "main" {
+  repository_name = var.project_name
+  description     = "Repository ${var.project_name}"
+  default_branch  = "master"
+}
+
+# CodeBuild
 resource "aws_codebuild_project" "main" {
   name          = var.project_name
   build_timeout = "5"

@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Values.appName }}-{{ .Values.appEnv }}-web"
+  labels:
+    app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+    spec:
+      containers:
+        - name: "{{ .Values.appName }}-{{ .Values.appEnv }}-web"
+          image: "{{ .Values.containerImage }}:{{ .Values.appVersion }}"
+          ports:
+            - containerPort: {{ get .Values.containerPort .Values.appEnv|int }}
+          env:
+            - name: "APP_ENV"
+              value: "{{ .Values.appEnv }}"
+            - name: "APP_VERSION"
+              value: "{{ .Values.appVersion }}"
+            - name: "COLOR"
+              value: "{{ .Values.appEnv }}"

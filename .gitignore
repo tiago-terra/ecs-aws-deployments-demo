@@ -1,5 +1,3 @@
-# Terraform
 *.tfvars
-*tfstate*
 .terraform
-*demo*
+*.tfstate*

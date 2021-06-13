@@ -5,12 +5,15 @@ Technical use case project aimed at demonstrating different deployment strategie
 - Blue/Green Deployments
 - Rolling Deployments
 
-# Tools
+# Tools 
+## Prerequisites
+- An IAM user account
+- The AWS credentials are setup in the user path
 
 ## Required locally
-
 - terraform
 - kubectl
+- helm
 
 ## Tools used
 
@@ -52,10 +55,15 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 ## Create infrastructure
 
-`cd terraform && terraform apply -auto-approve`
 
 # Kubernetes
 
 For the purposes of testing the deployments, an EKS cluster is setup. Alongside, a node group is created.
 Testing the cluster is possible from the CLI. To configure kubectl connection to cluster:
 `aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME`
+
+# TODO
+
+Neither green/blue necessarily live
+Canary deployments
+build build image
