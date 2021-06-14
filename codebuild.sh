@@ -1,24 +1,15 @@
 #/bin/bash
-# $1 - action - install/build/deploy
+export IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
+export IMAGE_URI="${ECR_REPO}:${IMAGE_TAG}"
 
-export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
 export HELM_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.14.0-linux-amd64.tar.gz "
 
-if [ -z $1 ];
-  then echo "Argument missing!\nUsage: $0 \$action" && exit 255;
-fi
-
-function build_push_ecr () 
-  # ARGUMENTS: 
-  # ECR Repo - String
-  # IMAGE_TAG - String
+function build_push_ecr ()
 {
-  export IMAGE_URI="$ECR_REPO:$CODEBUILD_RESOLVED_SOURCE_VERSION"
-
   echo "Building docker image..."
-  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2 > /dev/null
+  docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$IMAGE_TAG > /dev/null
   echo "Docker image build!"
 
   echo "Pushing image with tag :$1 to repo $2..."
@@ -77,7 +68,7 @@ case "$1" in
             tools_install
             ;;         
         build)
-            build_push_ecr $ECR_REPO $IMAGE_TAG
+            build_push_ecr
             ;;
         deploy)
             kube_deploy
