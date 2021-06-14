@@ -8,7 +8,8 @@ terraform {
 }
 
 data "terraform_remote_state" "infrastructure" {
-  backend "s3" {
+  backend = "s3"
+  config = {
     bucket  = "terraform-ecs-deployments-demo-state"
     key     = "infrastructure.tfstate"
     region  = "us-east-2"

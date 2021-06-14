@@ -1,5 +1,16 @@
+locals {
+  blue_env_vars = {
+    name  = "DEPLOY_TYPE"
+    value = "blue"
+  }
+  green_env_vars = {
+    name  = "DEPLOY_TYPE"
+    value = "green"
+  }
+}
+
 resource "aws_codepipeline" "this" {
-  name     = "${var.project_name}-pipeline"
+  name     = "${local.project_name}-pipeline"
   role_arn = data.aws_iam_role.this.arn
 
   artifact_store {
@@ -19,13 +30,13 @@ resource "aws_codepipeline" "this" {
       version          = "1"
       output_artifacts = ["SourceArtifact"]
       configuration = {
-        RepositoryName = local.repo_name
+        RepositoryName = local.project_name
         BranchName     = "master"
       }
     }
   }
 
-  #  Build artifact with CodeBuild
+  #  Build artifact
   stage {
     name = "Build"
 
@@ -39,13 +50,11 @@ resource "aws_codepipeline" "this" {
       version          = "1"
 
       configuration = {
-        ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = ""
+        ProjectName = aws_codebuild_project.this.name
       }
     }
   }
 
-  # Deploy a Blue environment
   stage {
     name = "DeployToBlue"
 
@@ -59,13 +68,11 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"blue\"}]"
+        EnvironmentVariables = local.blue_env_vars
       }
     }
   }
-  stage {
-    name = "RunBlueTests"
-  }
+
   stage {
     name = "ManualConfirmDeployToGreen"
 
@@ -84,7 +91,22 @@ resource "aws_codepipeline" "this" {
   }
   stage {
     name = "DeployToGreen"
+
+    action {
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["SourceArtifact"]
+      version         = "1"
+
+      configuration = {
+        ProjectName          = aws_codebuild_project.this.name
+        EnvironmentVariables = local.green_env_vars
+      }
+    }
   }
+
   stage {
     name = "RunGreenTests"
   }
@@ -93,8 +115,10 @@ resource "aws_codepipeline" "this" {
   }
 }
 
+
+/* 
 resource "aws_codepipeline" "iam_build" {
-  name     = "${var.project_name}-iam-pipeline"
+  name     = "${local.project_name}-iam-pipeline"
   role_arn = "NA"
 
   artifact_store {
@@ -105,11 +129,11 @@ resource "aws_codepipeline" "iam_build" {
 }
 
 
-
+ */
 
 
 # resource "aws_codepipeline" "bluegreen" {
-#   name     = "${var.project_name}-bluegreen"
+#   name     = "${local.project_name}-bluegreen"
 #   role_arn = data.aws_iam_role.main.arn
 
 #   stage {

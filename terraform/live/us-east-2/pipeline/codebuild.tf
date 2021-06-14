@@ -1,12 +1,5 @@
-locals {
-  env_vars = {
-    ECR_REPO         = aws_ecr_repository.this.repository_url
-    EKS_CLUSTER_NAME = data.aws_eks_cluster.cluster.name
-  }
-}
-
 resource "aws_codebuild_project" "this" {
-  name          = "${local.project_name}_codebuild"
+  name          = local.project_name
   build_timeout = "5"
   service_role  = aws_iam_role.this.arn
 
@@ -27,7 +20,7 @@ resource "aws_codebuild_project" "this" {
     privileged_mode             = true
 
     dynamic "environment_variable" {
-      for_each = local.env_vars
+      for_each = local.codebuild_env_vars
 
       content {
         name  = each.key

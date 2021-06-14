@@ -3,6 +3,10 @@ output "cluster_endpoint" {
   value       = module.eks.cluster_endpoint
 }
 
+output "eks_cluster_name" {
+  value = data.aws_eks_cluster.cluster.name
+}
+
 output "cluster_security_group_id" {
   description = "Security group ids attached to the cluster control plane."
   value       = module.eks.cluster_security_group_id
@@ -16,4 +20,8 @@ output "kubectl_config" {
 output "config_map_aws_auth" {
   description = "A kubernetes configuration to authenticate to this EKS cluster."
   value       = module.eks.config_map_aws_auth
+}
+
+output "ecr_repo_url" {
+  value = aws_ecr_repository.this.repository_url
 }
