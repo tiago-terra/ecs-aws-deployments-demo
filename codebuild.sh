@@ -5,11 +5,17 @@ export IMAGE_TAG=$IMAGE_TAG
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
 
-if [ -z $1 ];then echo "Argument missing!\nUsage: $0 \$action" && exit 255; fi
+if [ -z $1 ];
+  then echo "Argument missing!\nUsage: $0 \$action" && exit 255;
+fi
 
-function build_push_ecr () {
-  #Args - ECR REPO, IMAGE_TAG
+function build_push_ecr () 
+  # ARGUMENTS: 
+  # ECR Repo - String
+  # IMAGE_TAG - String
+{
   export IMAGE_URI="$1:$2"
+
   echo "Building docker image..."
   docker build -t $IMAGE_URI docker --build-arg IMAGE_TAG=$2 > /dev/null
   echo "Docker image build!"
@@ -20,6 +26,7 @@ function build_push_ecr () {
 }
 
 function tools_install () {
+
   echo "Downloading kubectl..."
   curl -o kubectl $KUBE_URL && chmod +x ./kubectl > /dev/null
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
@@ -45,8 +52,8 @@ function kube_sub_vars () {
 function kube_deploy () {
   # $1 - manifest path
   cd "${CODEBUILD_SRC_DIR}/k8s"
-  kube_sub_vars $DEPLOY_TYPE
-  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"
+`  kube_sub_vars $DEPLOY_TYPE
+  kubectl apply -f "${DEPLOY_TYPE}_deployment.yml"`
   kubectl apply -f "${DEPLOY_TYPE}_service.yml"
 
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
@@ -77,6 +84,16 @@ function kube_wait () {
 }
 
 # Main operations
-if [ $1 == 'install' ]; then tools_install; fi
-if [ $1 == 'build' ] && [ $DEPLOY_TYPE != 'green' ]; then build_push_ecr $ECR_REPO $IMAGE_TAG; fi
-if [ $1 == 'deploy' ]; then kube_deploy; fi
+case "$1" in
+        build)
+            build_push_ecr $ECR_REPO $IMAGE_TAG
+            ;;
+
+        deploy)
+            kube_deploy
+            ;;
+
+        install)
+            tools_install
+            ;;         
+esac

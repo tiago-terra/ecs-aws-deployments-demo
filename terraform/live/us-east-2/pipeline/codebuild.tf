@@ -1,39 +1,50 @@
-resource "aws_codebuild_project" "main" {
-  name          = var.project_name
-  service_role  = data.aws_iam_role.main.arn
+locals {
+  env_vars = {
+    ECR_REPO         = aws_ecr_repository.this.repository_url
+    EKS_CLUSTER_NAME = data.aws_eks_cluster.cluster.name
+  }
+}
+
+resource "aws_codebuild_project" "this" {
+  name          = "${local.project_name}_codebuild"
   build_timeout = "5"
+  service_role  = aws_iam_role.this.arn
 
   artifacts {
     type = "CODEPIPELINE"
   }
+
   cache {
     type     = "S3"
-    location = aws_s3_bucket.artifacts.bucket
+    location = module.artifact_bucket.s3_bucket_id
   }
-  logs_config {
-    cloudwatch_logs {
-      group_name  = "log-group"
-      stream_name = "log-stream"
-    }
-  }
+
   environment {
     image                       = "aws/codebuild/standard:4.0"
     compute_type                = "BUILD_GENERAL1_SMALL"
     type                        = "LINUX_CONTAINER"
-    privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
+    privileged_mode             = true
 
-    environment_variable {
-      name  = "ECR_REPO"
-      value = aws_ecr_repository.main.repository_url
+    dynamic "environment_variable" {
+      for_each = local.env_vars
+
+      content {
+        name  = each.key
+        value = each.value
+      }
     }
-    environment_variable {
-      name  = "EKS_CLUSTER_NAME"
-      value = data.aws_eks_cluster.cluster.name
+
+    source {
+      type      = "CODEPIPELINE"
+      buildspec = "buildspec.yml"
     }
   }
-  source {
-    type      = "CODEPIPELINE"
-    buildspec = "buildspec.yml"
+
+  logs_config {
+    cloudwatch_logs {
+      group_name  = "${local.project_name}-codebuild-log"
+      stream_name = "${local.project_name}-codebuild-log-stream"
+    }
   }
 }

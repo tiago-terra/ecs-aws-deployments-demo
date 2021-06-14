@@ -1,3 +1,10 @@
+# General 
+.DS_Store
+
+# Terraform
 *.tfvars
 .terraform
 *.tfstate*
+
+#Kubernetes
+kubeconfig*

@@ -1,33 +1,33 @@
-module "eks_cluster" {
-  source          = "terraform-aws-modules/eks/aws"
-  cluster_version = "1.18"
+module "eks" {
+  source = "terraform-aws-modules/eks/aws"
+
+  cluster_version = "1.20"
   cluster_name    = local.eks_cluster_name
   subnets         = module.vpc.private_subnets
   vpc_id          = module.vpc.vpc_id
+  tags            = local.tags
   map_users = [
     {
-      userarn  = data.aws_caller_identity.arn
-      username = data.aws_caller_identity.account_id
+      userarn  = data.aws_caller_identity.current.arn
+      username = data.aws_caller_identity.current.account_id
       groups   = ["system:masters"]
     }
   ]
-  node_groups = {
-    workers = {
-      desired_capacity          = 2
-      max_capacity              = 2
-      min_capacity              = 1
-      source_security_group_ids = [aws_security_group.management.id]
-      instance_types            = ["t3.micro"]
+  worker_groups = [
+    {
+      name                 = "worker-group"
+      instance_type        = "t3.micro"
+      asg_desired_capacity = 2
     }
-  }
+  ]
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.eks_cluster.cluster_id
+  name = module.eks.cluster_id
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks_cluster.cluster_id
+  name = module.eks.cluster_id
 }
 
 provider "kubernetes" {
@@ -35,5 +35,4 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.cluster.token
   load_config_file       = false
-  version                = "~> 1.9"
 }

@@ -1,24 +1,13 @@
-resource "aws_s3_bucket" "artifacts" {
-  bucket = "${var.project_name}-artifacts"
-  acl    = "private"
-  force_destroy = true
-
-  lifecycle {
-    prevent_destroy = false
-  }
-}
-
-# Code Pipeline
-resource "aws_codepipeline" "main" {
+resource "aws_codepipeline" "this" {
   name     = "${var.project_name}-pipeline"
-  role_arn = data.aws_iam_role.main.arn
+  role_arn = data.aws_iam_role.this.arn
 
   artifact_store {
-    location = aws_s3_bucket.artifacts.bucket
+    location = module.artifact_bucket.s3_bucket_id
     type     = "S3"
   }
 
-# Sets source to CodeCommit repo
+  # Get Code from VCS
   stage {
     name = "Source"
 
@@ -30,12 +19,13 @@ resource "aws_codepipeline" "main" {
       version          = "1"
       output_artifacts = ["SourceArtifact"]
       configuration = {
-        RepositoryName = aws_codecommit_repository.main.repository_name
+        RepositoryName = local.repo_name
         BranchName     = "master"
       }
     }
   }
 
+  #  Build artifact with CodeBuild
   stage {
     name = "Build"
 
@@ -49,25 +39,26 @@ resource "aws_codepipeline" "main" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.main.name
+        ProjectName          = aws_codebuild_project.this.name
         EnvironmentVariables = ""
       }
     }
   }
 
+  # Deploy a Blue environment
   stage {
     name = "DeployToBlue"
 
     action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["SourceArtifact"]
-      version          = "1"
+      name            = "Build"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      input_artifacts = ["SourceArtifact"]
+      version         = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.main.name
+        ProjectName          = aws_codebuild_project.this.name
         EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"blue\"}]"
       }
     }
@@ -76,17 +67,17 @@ resource "aws_codepipeline" "main" {
     name = "RunBlueTests"
   }
   stage {
-    name = "ManualConfirmDeployToGreen" 
+    name = "ManualConfirmDeployToGreen"
 
-    action   {
-      name = "Approval"
+    action {
+      name     = "Approval"
       category = "Approval"
-      owner = "AWS"
+      owner    = "AWS"
       provider = "Manual"
-      version = "1"
+      version  = "1"
 
       configuration = {
-        CustomData = "Confirm new version features are functional on BLUE ENVIRONMENT"
+        CustomData         = "Confirm new version features are functional on BLUE ENVIRONMENT"
         ExternalEntityLink = ""
       }
     }
@@ -103,15 +94,17 @@ resource "aws_codepipeline" "main" {
 }
 
 resource "aws_codepipeline" "iam_build" {
-  name = "${var.project_name}-iam-pipeline"
+  name     = "${var.project_name}-iam-pipeline"
   role_arn = "NA"
-  
+
   artifact_store {
     location = ""
-    type = "S3"
+    type     = "S3"
   }
 
 }
+
+
 
 
 
@@ -128,7 +121,7 @@ resource "aws_codepipeline" "iam_build" {
 #       owner    = "AWS"
 #       provider = "Manual"
 #       version  = "1"
-    
+
 #       configuration = {
 #         CustomData = "Check cluster is up - aws eks update-kubeconfig --name ${data.aws_eks_cluster.cluster.name} && kubectl get svc"
 #         ExternalEntityLink = ""

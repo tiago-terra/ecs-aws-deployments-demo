@@ -4,6 +4,11 @@ provider "aws" {
 
 locals {
   project_name = "terraform-ecs-deployments-demo"
+  tags = {
+    Project     = local.project_name
+    Description = "ECS Demo Project to demonstrate different deployment strategies within AWS"
+    Terraform   = true
+  }
 }
 
 module "state_bucket" {
@@ -11,12 +16,10 @@ module "state_bucket" {
 
   bucket = "${local.project_name}-state"
   acl    = "private"
+  tags   = local.tags
 
   versioning = {
     enabled = true
-  }
-  lifecycle {
-    prevent_destroy = false
   }
 }
 
@@ -31,4 +34,5 @@ module "dynamodb_table" {
       type = "S"
     }
   ]
+  tags = local.tags
 }

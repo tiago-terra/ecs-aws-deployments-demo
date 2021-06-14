@@ -1,0 +1,13 @@
+appName: ecs-deployments-demo
+appEnv: blue
+appVersion: 1.0.0
+containerImage: terra23/ecs-deployment-demo
+containerPort:
+  blue: 80
+  green: 80
+ingress:
+  enabled: true
+ports:
+  blue: 80
+  green: 80
+replicaCount: 2
