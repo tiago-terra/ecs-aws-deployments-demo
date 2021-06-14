@@ -3,7 +3,7 @@ module "eks" {
 
   cluster_name    = local.eks_cluster_name
   cluster_version = "1.20"
-  subnets         = module.vpc.private_subnets
+  subnets         = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
   tags            = local.tags
   map_users = [

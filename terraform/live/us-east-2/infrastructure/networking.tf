@@ -21,15 +21,18 @@ module "vpc" {
   }
 }
 
-resource "aws_security_group" "http_in" {
+resource "aws_security_group" "this" {
   name_prefix = "management"
   vpc_id      = module.vpc.vpc_id
-  tags        = local.tags
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = local.public_subnets
+  dynamic "ingress" {
+    for_each = toset([22, 80])
+
+    content {
+      from_port = ingress.value
+      to_port = ingress.value
+      protocol = "tcp"
+      cidr_blocks = module.vpc.public_subnets_cidr_blocks
+    }
   }
 }
