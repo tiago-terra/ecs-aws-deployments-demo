@@ -16,6 +16,4 @@ phases:
   build:
     commands:
       - bash $BUILD_SCRIPT build
-  post_build:
-    commands:
       - bash $BUILD_SCRIPT deploy
