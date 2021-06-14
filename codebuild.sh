@@ -44,14 +44,14 @@ function tools_install () {
 }
 
 function kube_deploy () {
-  CODE_DIR="${CODEBUILD_SCR_DIR}/kubernetes/${RELEASE_NAME}"
+  CODE_DIR="${CODEBUILD_SCR_DIR}/kubernetes/${PROJECT_NAME}"
 
   helm upgrade --set \
-    appName=$RELEASE_NAME \
+    appName=$PROJECT_NAME \
     appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     appEnvironment=$DEPLOY_TYPE \
     replicaCount=$REPLICA_COUNT \
-    "${RELEASE_NAME}_${DEPLOY_TYPE}" $CODE_DIR
+    "${PROJECT_NAME}_${DEPLOY_TYPE}" $CODE_DIR
 
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   while [ -z $EXTERNAL_IP ]

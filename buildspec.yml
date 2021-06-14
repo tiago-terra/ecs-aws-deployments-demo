@@ -16,6 +16,3 @@ phases:
   build:
     commands:
       - bash $BUILD_SCRIPT build
-  post_build:
-    commands:
-      - helm upgrade -i $RELEASE_NAME <PATH_TO_HELM_FILES> -f ./path/to/kubernetes/values/values.$ENV.yaml --set image.tag=$CODEBUILD_RESOLVED_SOURCE_VERSION
