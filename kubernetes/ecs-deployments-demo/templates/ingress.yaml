@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: "{{ .Values.appName }}-{{ .Values.appEnv }}-ingress"
+  name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-ingress"
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
@@ -12,6 +12,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: "{{ .Values.appName }}-{{ .Values.appEnv }}-service"
+                name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-service"
                 port:
-                  number: {{ get .Values.ports .Values.appEnv|int }}
+                  number: { { get .Values.ports .Values.appEnv|int } }

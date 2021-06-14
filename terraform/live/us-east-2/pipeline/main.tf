@@ -5,15 +5,85 @@ provider "aws" {
   region = "us-east-2"
 }
 
-# Bucket for artifacts
-module "artifact_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+########################################################################
+# S3 Bucket
+########################################################################
+resource "aws_s3_bucket" "this" {
+  bucket        = "${local.project_name}-artifacts"
+  acl           = "private"
+  force_destroy = true
+  tags          = local.tags
 
-  bucket = "${local.project_name}-artifacts"
-  acl    = "private"
-  tags   = local.tags
-
-  versioning = {
+  versioning {
     enabled = true
+  }
+}
+########################################################################
+# IAM
+########################################################################
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = formatlist("%s.amazonaws.com", ["codebuild", "codecommit", "codepipeline", "eks", "s3"])
+    }
+  }
+}
+
+data "aws_iam_policy_document" "this" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "ec2:CreateNetworkInterface",
+      "ec2:DescribeDhcpOptions",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DeleteNetworkInterface",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeVpcs",
+      "ecr:GetAuthorizationToken",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:DescribeRepositories",
+      "ecr:ListImages",
+      "ecr:DescribeImages",
+      "ecr:BatchGetImage",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload",
+      "ecr:PutImage",
+      "eks:DescribeCluster",
+      "eks:ListClusters",
+      "codecommit:CancelUploadArchive",
+      "codecommit:GetBranch",
+      "codecommit:GetCommit",
+      "codecommit:GetUploadArchiveStatus",
+      "codecommit:UploadArchive",
+      "codebuild:BatchGetBuilds",
+      "codebuild:StartBuild"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    actions = ["s3:*"]
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.this.bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.this.bucket}/*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "this" {
+  name               = "${local.project_name}_cicd_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+
+  inline_policy {
+    name   = "pipeline_policy"
+    policy = data.aws_iam_policy_document.this.json
   }
 }

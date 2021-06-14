@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ .Values.appName }}-{{ .Values.appEnv }}-service"
+  name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-service"
   labels:
-    app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+    app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
 spec:
   type: NodePort
   ports:
-    - port: {{ get .Values.containerPort .Values.appEnv|int }}
-      targetPort: {{ get .Values.ports .Values.appEnv|int  }}
+    - port: { { .Values.container_port |int } }
+      targetPort: { { .Values.container_port |int } }
   selector:
-    app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+    app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"

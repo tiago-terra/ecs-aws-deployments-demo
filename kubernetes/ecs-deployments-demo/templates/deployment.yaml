@@ -6,24 +6,24 @@ metadata:
   labels:
     app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: { { .Values.replicaCount } }
   selector:
     matchLabels:
-      app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+      app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
   template:
     metadata:
       labels:
-        app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+        app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
     spec:
       containers:
-        - name: "{{ .Values.appName }}-{{ .Values.appEnv }}-web"
+        - name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-web"
           image: "{{ .Values.containerImage }}:{{ .Values.appVersion }}"
           ports:
-            - containerPort: {{ get .Values.containerPort .Values.appEnv|int }}
+            - containerPort: { { Values.containerPort } }
           env:
             - name: "APP_ENV"
-              value: "{{ .Values.appEnv }}"
+              value: "{{ .Values.appEnvironment }}"
             - name: "APP_VERSION"
               value: "{{ .Values.appVersion }}"
             - name: "COLOR"
-              value: "{{ .Values.appEnv }}"
+              value: "{{ .Values.appEnvironment }}"

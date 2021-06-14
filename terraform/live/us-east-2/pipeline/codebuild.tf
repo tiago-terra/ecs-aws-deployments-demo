@@ -1,7 +1,21 @@
+locals {
+  codebuild_env_vars = {
+    ECR_REPO         = data.terraform_remote_state.infrastructure.outputs.ecr_repo_url
+    EKS_CLUSTER_NAME = data.terraform_remote_state.infrastructure.outputs.eks_cluster_name
+    REPLICA_COUNT = 2  
+    PROJECT_NAME = local.project_name
+  }
+}
+
 resource "aws_codebuild_project" "this" {
   name          = local.project_name
-  build_timeout = "5"
   service_role  = aws_iam_role.this.arn
+  build_timeout = "5"
+
+  source {
+    type      = "CODEPIPELINE"
+    buildspec = "buildspec.yml"
+  }
 
   artifacts {
     type = "CODEPIPELINE"
@@ -9,7 +23,7 @@ resource "aws_codebuild_project" "this" {
 
   cache {
     type     = "S3"
-    location = module.artifact_bucket.s3_bucket_id
+    location = aws_s3_bucket.this.bucket
   }
 
   environment {
@@ -23,14 +37,9 @@ resource "aws_codebuild_project" "this" {
       for_each = local.codebuild_env_vars
 
       content {
-        name  = each.key
-        value = each.value
+        name  = environment_variable.key
+        value = environment_variable.value
       }
-    }
-
-    source {
-      type      = "CODEPIPELINE"
-      buildspec = "buildspec.yml"
     }
   }
 

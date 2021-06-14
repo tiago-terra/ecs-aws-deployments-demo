@@ -1,21 +1,21 @@
 locals {
-  blue_env_vars = {
+  blue_env_vars = [{
     name  = "DEPLOY_TYPE"
     value = "blue"
-  }
-  green_env_vars = {
+  }]
+  green_env_vars = [{
     name  = "DEPLOY_TYPE"
     value = "green"
-  }
+  }]
 }
 
 resource "aws_codepipeline" "this" {
   name     = "${local.project_name}-pipeline"
-  role_arn = data.aws_iam_role.this.arn
+  role_arn = aws_iam_role.this.arn
 
   artifact_store {
-    location = module.artifact_bucket.s3_bucket_id
     type     = "S3"
+    location = aws_s3_bucket.this.bucket
   }
 
   # Get Code from VCS
@@ -56,7 +56,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "DeployToBlue"
+    name = "DeployBlue"
 
     action {
       name            = "Build"
@@ -68,7 +68,7 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = local.blue_env_vars
+        EnvironmentVariables = jsonencode(local.blue_env_vars)
       }
     }
   }
@@ -85,12 +85,12 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         CustomData         = "Confirm new version features are functional on BLUE ENVIRONMENT"
-        ExternalEntityLink = ""
+        ExternalEntityLink = local.eks_cluster_endpoint
       }
     }
   }
   stage {
-    name = "DeployToGreen"
+    name = "DeployGreen"
 
     action {
       name            = "Build"
@@ -102,34 +102,11 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = local.green_env_vars
+        EnvironmentVariables = jsonencode(local.green_env_vars)
       }
     }
   }
-
-  stage {
-    name = "RunGreenTests"
-  }
-  stage {
-    name = "ManualRollback"
-  }
 }
-
-
-/* 
-resource "aws_codepipeline" "iam_build" {
-  name     = "${local.project_name}-iam-pipeline"
-  role_arn = "NA"
-
-  artifact_store {
-    location = ""
-    type     = "S3"
-  }
-
-}
-
-
- */
 
 
 # resource "aws_codepipeline" "bluegreen" {

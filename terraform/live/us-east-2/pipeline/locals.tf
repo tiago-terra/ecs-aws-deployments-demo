@@ -1,26 +1,8 @@
 locals {
-  project_name = "ecs-aws-deployments-demo"
-  region       = "us-east-2"
-  policies_to_attach = [
-    # CodeBuild/Pipeline
-    "AWSCodeBuildAdminAccess",
-    "AWSCodeCommitFullAccess",
-    "AWSCodePipeline_FullAccess",
-    # ECR
-    "AmazonEC2ContainerRegistryPowerUser",
-    "AmazonEC2ContainerServiceFullAccess",
-    # EKS
-    "AmazonEKSClusterPolicy",
-    "AmazonEKSServicePolicy",
-
-    "AmazonS3FullAccess",
-    "CloudWatchLogsFullAccess"
-  ]
-
-  codebuild_env_vars = {
-    ECR_REPO         = data.terraform_remote_state.infrastructure.outputs.ecr_repo_url
-    EKS_CLUSTER_NAME = data.terraform_remote_state.infrastructure.outputs.eks_cluster_name
-  }
+  project_name         = "ecs-aws-deployments-demo"
+  role_name            = "${local.project_name}_pipeline_role"
+  region               = "us-east-2"
+  eks_cluster_endpoint = data.terraform_remote_state.infrastructure.outputs.cluster_endpoint
 
   tags = {
     Project     = local.project_name
