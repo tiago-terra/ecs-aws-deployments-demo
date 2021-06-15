@@ -34,30 +34,30 @@ function tools_install () {
 
 function kube_deploy () {
 
-  helm upgrade -i "${PROJECT_NAME}-${DEPLOY_TYPE}" $CODEBUILD_SRC_DIR/kubernetes/$PROJECT_NAME \
+  helm upgrade -i "${PROJECT_NAME}-${1}" $CODEBUILD_SRC_DIR/kubernetes/$PROJECT_NAME \
     --set appName=$PROJECT_NAME \
     --set appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
-    --set appEnvironment=$DEPLOY_TYPE \
+    --set appEnvironment=$1 \
     --set replicaCount=$REPLICA_COUNT  \
     --set containerIMage=$IMAGE_URI \
     --set port=80 \
     --debug
 
-  EXTERNAL_IP=$(kubectl get svc "$DEPLOY_TYPE-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  EXTERNAL_IP=$(kubectl get svc "$1-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   
   while [ -z $EXTERNAL_IP ]
   do
     echo "Waiting for External IP to be allocated..."
-    EXTERNAL_IP=$(kubectl get svc "$DEPLOY_TYPE-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+    EXTERNAL_IP=$(kubectl get svc "$1-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   done
 
   echo "Waiting for $EXTERNAL_IP to be up..."
-  until $(curl --output /dev/null --silent --head --fail $DEPLOY_TYPE); do
+  until $(curl --output /dev/null --silent --head --fail $1); do
     printf '.'
     sleep 5
   done
 
-  if [ $DEPLOY_TYPE == 'green' ]; then
+  if [ $1 == 'green' ]; then
     helm uninstall "${RELEASE_NAME}-blue"
   fi
 }
@@ -71,6 +71,6 @@ case "$1" in
             build_push_ecr
             ;;
         deploy)
-            kube_deploy
+            kube_deploy $2
             ;;
 esac
