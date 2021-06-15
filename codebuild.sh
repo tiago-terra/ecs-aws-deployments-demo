@@ -1,7 +1,7 @@
 #/bin/bash
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
-export HELM_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.14.0-linux-amd64.tar.gz "
+export HELM_URL="https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"
 export CODE_DIR="${CODEBUILD_SCR_DIR}/kubernetes/${PROJECT_NAME}"
 export IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
 export IMAGE_URI="${ECR_REPO}:${IMAGE_TAG}"
@@ -23,9 +23,9 @@ function tools_install () {
   curl -o kubectl $KUBE_URL && chmod +x ./kubectl > /dev/null
 
   echo "Downloading helm..."
-  wget $HELM_URL -O helm.tar.gz; tar -xzf helm.tar.gz
-  chmod +x ./linux-amd64/helm
-  mv ./linux-amd64/helm /usr/local/bin/helm
+  curl $HELM_URL  > get_helm.sh
+  chmod 700 get_helm.sh
+  ./get_helm.sh
 
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl
   PATH=$PATH:$HOME/bin
