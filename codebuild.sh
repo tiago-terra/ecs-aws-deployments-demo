@@ -36,7 +36,7 @@ function tools_install () {
 function kube_deploy () {
   # $1 = $DEPLOY_TYPE
 
-  helm upgrade -i "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" \
+  helm upgrade -i "${PROJECT_NAME}_${1}" "kubernetes/${PROJECT_NAME}" \
     --set appName=$PROJECT_NAME \
     --set appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     --set appEnvironment=$DEPLOY_TYPE \
@@ -56,7 +56,7 @@ function kube_deploy () {
     sleep 5
   done
 
-  if [ $DEPLOY_TYPE == 'green' ]; then
+  if [ $1 == 'green' ]; then
     helm uninstall "${RELEASE_NAME}_BLUE"
   fi
 }
