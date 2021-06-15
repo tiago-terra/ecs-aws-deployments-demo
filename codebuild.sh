@@ -34,6 +34,7 @@ function tools_install () {
 }
 
 function kube_deploy () {
+  # $1 = $DEPLOY_TYPE
 
   helm upgrade -i "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" \
     --set appName=$PROJECT_NAME \
@@ -41,11 +42,12 @@ function kube_deploy () {
     --set appEnvironment=$DEPLOY_TYPE \
     --set replicaCount=$REPLICA_COUNT 
 
-  EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  EXTERNAL_IP=$(kubectl get svc "$1-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  
   while [ -z $EXTERNAL_IP ]
   do
     echo "Waiting for External IP to be allocated..."
-    EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+    EXTERNAL_IP=$(kubectl get svc "$1-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   done
 
   echo "Waiting for $EXTERNAL_IP to be up..."
@@ -68,6 +70,6 @@ case "$1" in
             build_push_ecr
             ;;
         deploy)
-            kube_deploy
+            kube_deploy $2
             ;;
 esac
