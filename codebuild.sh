@@ -34,12 +34,12 @@ function tools_install () {
 }
 
 function kube_deploy () {
-  ls
-  helm upgrade -i "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" --set \
-    appName=$PROJECT_NAME \
-    appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
-    appEnvironment=$DEPLOY_TYPE \
-    replicaCount=$REPLICA_COUNT 
+
+  helm upgrade -i "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" \
+    --set appName=$PROJECT_NAME \
+    --set appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
+    --set appEnvironment=$DEPLOY_TYPE \
+    --set replicaCount=$REPLICA_COUNT 
 
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   while [ -z $EXTERNAL_IP ]
