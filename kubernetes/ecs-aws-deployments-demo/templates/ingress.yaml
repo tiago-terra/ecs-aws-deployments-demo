@@ -8,10 +8,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: "/{{ .Values.appEnv }}"
+          - path: "/{{ .Values.appEnvironment }}"
             pathType: Prefix
             backend:
               service:
                 name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-service"
                 port:
-                  number: { { get .Values.ports .Values.appEnv|int } }
+                  number: "{{ .Values.containerPort |int }}"
