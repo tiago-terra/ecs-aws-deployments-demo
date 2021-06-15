@@ -39,7 +39,6 @@ function kube_deploy () {
 
   echo "Setting up tiller service account..."
   kubectl apply -f "templates/tiller_user.yaml"
-  helm init --service-account tiller
 
   helm upgrade --set \
     appName=$PROJECT_NAME \
