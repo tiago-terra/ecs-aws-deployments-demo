@@ -100,11 +100,13 @@ resource "aws_codepipeline" "rolling" {
       version          = "1"
       output_artifacts = ["SourceArtifact"]
       configuration = {
-        RepositoryName = local.project_name
-        BranchName     = "master"
+        RepositoryName       = local.project_name
+        BranchName           = "master"
+        PollForSourceChanges = false
       }
     }
   }
+
   # Build and Deploy
   stage {
     name = "DeployRolling"
