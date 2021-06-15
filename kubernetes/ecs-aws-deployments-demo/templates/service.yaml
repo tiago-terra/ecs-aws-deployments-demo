@@ -9,7 +9,5 @@ spec:
   ports:
     - port: {{ .Values.containerPort }}
       targetPort: {{ .Values.containerPort }}
-      protocol: TCP
-      name: web
   selector:
    app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
