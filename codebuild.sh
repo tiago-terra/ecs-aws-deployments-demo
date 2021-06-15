@@ -41,7 +41,8 @@ function kube_deploy () {
     --set appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     --set appEnvironment=$DEPLOY_TYPE \
     --set replicaCount=$REPLICA_COUNT  \
-    --set containerIMage=$IMAGE_URI
+    --set containerIMage=$IMAGE_URI \
+    --set port=80
 
   EXTERNAL_IP=$(kubectl get svc "$DEPLOY_TYPE-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   
