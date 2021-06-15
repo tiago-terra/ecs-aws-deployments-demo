@@ -14,4 +14,4 @@ spec:
               service:
                 name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-service"
                 port:
-                  number: "{{ .Values.containerPort |int }}"
+                  number: { { .Values.containerPort |int } }
