@@ -35,8 +35,6 @@ function tools_install () {
 }
 
 function kube_deploy () {
-  cd "$CODEBUILD_SCR_DIR/kubernetes/$PROJECT_NAME"
-
   helm upgrade "${PROJECT_NAME}_${DEPLOY_TYPE}" . --set \
     appName=$PROJECT_NAME \
     appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
