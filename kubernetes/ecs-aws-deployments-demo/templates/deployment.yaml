@@ -2,9 +2,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ .Values.appName }}-{{ .Values.appEnv }}-web"
+  name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-web"
   labels:
-    app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
+    app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
 spec:
   replicas: {{ .Values.replicaCount  }}
   selector:
