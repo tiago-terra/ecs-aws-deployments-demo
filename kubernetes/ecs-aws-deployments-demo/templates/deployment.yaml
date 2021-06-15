@@ -6,7 +6,7 @@ metadata:
   labels:
     app: "{{ .Values.appName }}-{{ .Values.appEnv }}"
 spec:
-  replicas: "{{ .Values.replicaCount |int }}"
+  replicas: {{ .Values.replicaCount  }}
   selector:
     matchLabels:
       app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"
@@ -19,7 +19,7 @@ spec:
         - name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-web"
           image: "{{ .Values.containerImage }}"
           ports:
-            - containerPort: "{{ .Values.port |int }}"
+            - containerPort: {{ .Values.containerPort }}
           env:
             - name: "APP_ENV"
               value: "{{ .Values.appEnvironment }}"

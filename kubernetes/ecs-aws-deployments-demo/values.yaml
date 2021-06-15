@@ -1,5 +1,5 @@
 appName: ecs-aws-deployments-demo
 appEnvironment: blue
 appVersion: 1.0.0
-port: 80
+containerPort: 80
 replicaCount: 2
