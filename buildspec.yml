@@ -15,6 +15,7 @@ phases:
       - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||')
   build:
     commands:
+      - echo "DEPLOY TYPE is ${DEPLOY_TYPE}"
       - cd "$CODEBUILD_SRC_DIR"
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy $DEPLOY_TYPE
