@@ -43,7 +43,7 @@ function kube_deploy () {
     --set port=80 \
     --debug
 
-  SERVICE_NAME="${PROJECT_NAME}-${DEPLOY_TYPE}"
+  SERVICE_NAME="${PROJECT_NAME}-${DEPLOY_TYPE}-service"
   EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   
   while [ -z $EXTERNAL_IP ]
