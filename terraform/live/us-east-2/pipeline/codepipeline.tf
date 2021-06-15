@@ -24,26 +24,7 @@ resource "aws_codepipeline" "this" {
       }
     }
   }
-
-  #  Build artifact
-  stage {
-    name = "Build"
-
-    action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["SourceArtifact"]
-      output_artifacts = ["BuildOutput"]
-      version          = "1"
-
-      configuration = {
-        ProjectName = aws_codebuild_project.this.name
-      }
-    }
-  }
-
+  # Build and Deploy to Blue
   stage {
     name = "DeployBlue"
 
@@ -78,6 +59,8 @@ resource "aws_codepipeline" "this" {
       }
     }
   }
+
+  # Build and Deploy to Green
   stage {
     name = "DeployGreen"
 
