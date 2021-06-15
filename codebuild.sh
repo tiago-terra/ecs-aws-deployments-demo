@@ -36,10 +36,10 @@ function tools_install () {
 function kube_deploy () {
   # $1 = $DEPLOY_TYPE
 
-  helm upgrade -i "${PROJECT_NAME}_${1}" "kubernetes/${PROJECT_NAME}" \
+  helm upgrade -i "${PROJECT_NAME}-${1}" "kubernetes/${PROJECT_NAME}" \
     --set appName=$PROJECT_NAME \
     --set appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
-    --set appEnvironment=$DEPLOY_TYPE \
+    --set appEnvironment=$1 \
     --set replicaCount=$REPLICA_COUNT 
 
   EXTERNAL_IP=$(kubectl get svc "$1-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
@@ -57,7 +57,7 @@ function kube_deploy () {
   done
 
   if [ $1 == 'green' ]; then
-    helm uninstall "${RELEASE_NAME}_BLUE"
+    helm uninstall "${RELEASE_NAME}-blue"
   fi
 }
 
