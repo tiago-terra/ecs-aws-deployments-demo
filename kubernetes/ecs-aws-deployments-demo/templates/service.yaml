@@ -7,7 +7,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: { { .Values.port } }
-      targetPort: { { .Values.port } }
+    - port: "{{ .Values.port |int }}"
+      targetPort: "{{ .Values.port |int }}"
   selector:
     app: "{{ .Values.appName }}-{{ .Values.appEnvironment }}"

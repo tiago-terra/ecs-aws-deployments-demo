@@ -33,8 +33,6 @@ function tools_install () {
 }
 
 function kube_deploy () {
-  # $1 = $DEPLOY_TYPE
-  echo $(ls)
 
   helm upgrade -i "${PROJECT_NAME}-${DEPLOY_TYPE}" $CODEBUILD_SRC_DIR/kubernetes/$PROJECT_NAME \
     --set appName=$PROJECT_NAME \
@@ -42,7 +40,8 @@ function kube_deploy () {
     --set appEnvironment=$DEPLOY_TYPE \
     --set replicaCount=$REPLICA_COUNT  \
     --set containerIMage=$IMAGE_URI \
-    --set port=80
+    --set port=80 \
+    --debug
 
   EXTERNAL_IP=$(kubectl get svc "$DEPLOY_TYPE-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   
