@@ -34,8 +34,8 @@ function tools_install () {
 }
 
 function kube_deploy () {
-
-  helm upgrade "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" --set \
+  ls
+  helm upgrade -i "${PROJECT_NAME}_${DEPLOY_TYPE}" "kubernetes/${PROJECT_NAME}" --set \
     appName=$PROJECT_NAME \
     appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     appEnvironment=$DEPLOY_TYPE \
