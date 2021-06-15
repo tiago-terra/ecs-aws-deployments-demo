@@ -1,10 +1,10 @@
 #/bin/bash
-export IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
-export IMAGE_URI="${ECR_REPO}:${IMAGE_TAG}"
-
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
 export HELM_URL="https://storage.googleapis.com/kubernetes-helm/helm-v2.14.0-linux-amd64.tar.gz "
+
+export IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
+export IMAGE_URI="${ECR_REPO}:${IMAGE_TAG}"
 
 function build_push_ecr ()
 {

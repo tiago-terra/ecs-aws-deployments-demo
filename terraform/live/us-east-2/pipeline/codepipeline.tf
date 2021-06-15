@@ -74,7 +74,7 @@ resource "aws_codepipeline" "this" {
   }
 
   stage {
-    name = "ManualConfirmDeployToGreen"
+    name = "ManualApprovalToDeployToGreen"
 
     action {
       name     = "Approval"

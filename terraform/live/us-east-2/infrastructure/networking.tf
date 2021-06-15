@@ -26,7 +26,7 @@ resource "aws_security_group" "this" {
   vpc_id      = module.vpc.vpc_id
 
   dynamic "ingress" {
-    for_each = toset([22, 80])
+    for_each = toset(["22", "80"])
 
     content {
       from_port = ingress.value
