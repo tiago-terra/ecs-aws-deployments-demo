@@ -20,13 +20,16 @@ module "eks" {
       groups   = ["system:masters"]
     }
   ]
-  worker_groups = [
-    {
-      name                 = "worker-group"
-      instance_type        = "t3.micro"
-      asg_desired_capacity = 2
+  node_groups = {
+    workers = {
+      name                      = "${local.project_name}_worker"
+      desired_capacity          = 2
+      max_capacity              = 4
+      min_capacity              = 1
+      source_security_group_ids = [aws_security_group.this.id]
+      instance_type             = "t3.micro"
     }
-  ]
+  }
 }
 
 data "aws_eks_cluster" "cluster" {
