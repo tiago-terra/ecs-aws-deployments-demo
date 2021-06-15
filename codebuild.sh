@@ -35,9 +35,10 @@ function tools_install () {
 }
 
 function kube_deploy () {
+  cd "${CODEBUILD_SCR_DIR}/kubernetes/${PROJECT_NAME}"
 
   echo "Setting up tiller service account..."
-  kubectl apply -f "${CODE_DIR}/templates/tiller_user.yaml"
+  kubectl apply -f "templates/tiller_user.yaml"
   helm init --service-account tiller
 
   helm upgrade --set \
@@ -45,7 +46,7 @@ function kube_deploy () {
     appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     appEnvironment=$DEPLOY_TYPE \
     replicaCount=$REPLICA_COUNT \
-    "${PROJECT_NAME}_${DEPLOY_TYPE}" $CODE_DIR
+    "${PROJECT_NAME}_${DEPLOY_TYPE}" .
 
   EXTERNAL_IP=$(kubectl get svc "${DEPLOY_TYPE}-lb" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   while [ -z $EXTERNAL_IP ]
