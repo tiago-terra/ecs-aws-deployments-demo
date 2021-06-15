@@ -35,7 +35,7 @@ function tools_install () {
 
 function kube_deploy () {
   # $1 = $DEPLOY_TYPE
-  ls
+  echo $(ls)
 
   helm upgrade -i "${PROJECT_NAME}-${1}" ./kubernetes/$PROJECT_NAME \
     --set appName=$PROJECT_NAME \
