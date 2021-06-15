@@ -17,9 +17,9 @@ spec:
     spec:
       containers:
         - name: "{{ .Values.appName }}-{{ .Values.appEnvironment }}-web"
-          image: "{{ .Values.containerImage }}:{{ .Values.appVersion }}"
+          image: "{{ .Values.containerImage }}"
           ports:
-            - containerPort: { { .Values.containerPort |int } }
+            - containerPort: { { .Values.port } }
           env:
             - name: "APP_ENV"
               value: "{{ .Values.appEnvironment }}"

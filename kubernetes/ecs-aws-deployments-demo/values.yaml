@@ -1,6 +1,5 @@
 appName: ecs-aws-deployments-demo
 appEnvironment: blue
 appVersion: 1.0.0
-containerImage: terra23/ecs-aws-deployment-demo
-containerPort: 80
+port: 80
 replicaCount: 2
