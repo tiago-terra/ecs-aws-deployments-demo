@@ -2,9 +2,9 @@
 export KUBE_URL="https://amazon-eks.s3.us-west-2.amazonaws.com/1.15.10/2020-02-22/bin/linux/amd64/kubectl"
 export AUTHENTICATOR_URL="https://amazon-eks.s3-us-west-2.amazonaws.com/1.10.3/2018-07-26/bin/linux/amd64/aws-iam-authenticator"
 export HELM_URL="https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3"
-export CODE_DIR="${CODEBUILD_SCR_DIR}/kubernetes/${PROJECT_NAME}"
+export CODE_DIR="$CODEBUILD_SCR_DIR/kubernetes/$PROJECT_NAME"
 export IMAGE_TAG=$CODEBUILD_RESOLVED_SOURCE_VERSION
-export IMAGE_URI="${ECR_REPO}:${IMAGE_TAG}"
+export IMAGE_URI="$ECR_REPO:$IMAGE_TAG"
 
 function build_push_ecr ()
 {
@@ -35,9 +35,9 @@ function tools_install () {
 }
 
 function kube_deploy () {
-  cd "${CODEBUILD_SCR_DIR}/kubernetes/${PROJECT_NAME}"
+  cd "$CODEBUILD_SCR_DIR/kubernetes/$PROJECT_NAME"
 
-  helm upgrade "${PROJECT_NAME}_${DEPLOY_TYPE}" ./$PROJECT_NAME --set \
+  helm upgrade "${PROJECT_NAME}_${DEPLOY_TYPE}" . --set \
     appName=$PROJECT_NAME \
     appVersion=$CODEBUILD_RESOLVED_SOURCE_VERSION \
     appEnvironment=$DEPLOY_TYPE \
