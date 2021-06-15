@@ -15,6 +15,6 @@ phases:
       - eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||')
   build:
     commands:
-      - cd "$CODEBUILD_SCR_DIR/kubernetes/$PROJECT_NAME"
+      - cd "$CODEBUILD_SRC_DIR"
       - bash $BUILD_SCRIPT build
       - bash $BUILD_SCRIPT deploy
