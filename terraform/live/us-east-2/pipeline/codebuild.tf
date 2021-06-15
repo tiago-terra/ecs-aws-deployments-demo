@@ -2,14 +2,14 @@ locals {
   codebuild_env_vars = {
     ECR_REPO         = data.terraform_remote_state.infrastructure.outputs.ecr_repo_url
     EKS_CLUSTER_NAME = data.terraform_remote_state.infrastructure.outputs.eks_cluster_name
-    PROJECT_NAME = local.project_name
-    REPLICA_COUNT = 2  
+    PROJECT_NAME     = local.project_name
+    REPLICA_COUNT    = 2
   }
 }
 
 resource "aws_codebuild_project" "this" {
   name          = local.project_name
-  service_role  = aws_iam_role.this.arn
+  service_role  = local.role_arn
   build_timeout = "5"
 
   source {

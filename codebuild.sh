@@ -26,6 +26,7 @@ function tools_install () {
   wget $HELM_URL -O helm.tar.gz; tar -xzf helm.tar.gz
   chmod +x ./linux-amd64/helm
   mv ./linux-amd64/helm /usr/local/bin/helm
+  helm init
 
   mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl
   PATH=$PATH:$HOME/bin

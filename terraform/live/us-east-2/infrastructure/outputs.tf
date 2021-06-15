@@ -24,3 +24,7 @@ output "config_map_aws_auth" {
 output "ecr_repo_url" {
   value = aws_ecr_repository.this.repository_url
 }
+
+output "role_arn" {
+  value = aws_iam_role.this.arn
+}

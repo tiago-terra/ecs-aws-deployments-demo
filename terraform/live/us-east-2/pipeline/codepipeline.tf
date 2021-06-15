@@ -11,7 +11,7 @@ locals {
 
 resource "aws_codepipeline" "this" {
   name     = "${local.project_name}-pipeline"
-  role_arn = aws_iam_role.this.arn
+  role_arn = local.role_arn
 
   artifact_store {
     type     = "S3"
@@ -107,44 +107,3 @@ resource "aws_codepipeline" "this" {
     }
   }
 }
-
-
-# resource "aws_codepipeline" "bluegreen" {
-#   name     = "${local.project_name}-bluegreen"
-#   role_arn = data.aws_iam_role.main.arn
-
-#   stage {
-#     name = "ManualApproval"
-
-#     action {
-#       name     = "Approval"
-#       category = "Approval"
-#       owner    = "AWS"
-#       provider = "Manual"
-#       version  = "1"
-
-#       configuration = {
-#         CustomData = "Check cluster is up - aws eks update-kubeconfig --name ${data.aws_eks_cluster.cluster.name} && kubectl get svc"
-#         ExternalEntityLink = ""
-#       }
-#     }
-#   }
-
-#   stage {
-#     name = "DeployGreen"
-
-#     action {
-#       name             = "Build"
-#       category         = "Build"
-#       owner            = "AWS"
-#       provider         = "CodeBuild"
-#       input_artifacts  = ["SourceArtifact"]
-#       version          = "1"
-
-#       configuration = {
-#         ProjectName = aws_codebuild_project.main.name
-#         EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"green\"}]"
-#       }
-#     }
-#   }
-# }

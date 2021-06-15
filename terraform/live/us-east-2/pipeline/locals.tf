@@ -1,7 +1,7 @@
 locals {
   project_name         = "ecs-aws-deployments-demo"
-  role_name            = "${local.project_name}_pipeline_role"
   region               = "us-east-2"
+  role_arn             = data.terraform_remote_state.infrastructure.outputs.role_arn
   eks_cluster_endpoint = data.terraform_remote_state.infrastructure.outputs.cluster_endpoint
 
   tags = {

@@ -13,6 +13,13 @@ module "eks" {
       groups   = ["system:masters"]
     }
   ]
+  map_roles = [
+    {
+      rolearn  = aws_iam_role.this.arn
+      username = aws_iam_role.this.name
+      groups   = ["system:masters"]
+    }
+  ]
   worker_groups = [
     {
       name                 = "worker-group"
