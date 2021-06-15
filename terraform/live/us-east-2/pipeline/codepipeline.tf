@@ -1,14 +1,3 @@
-locals {
-  blue_env_vars = [{
-    name  = "DEPLOY_TYPE"
-    value = "blue"
-  }]
-  green_env_vars = [{
-    name  = "DEPLOY_TYPE"
-    value = "green"
-  }]
-}
-
 resource "aws_codepipeline" "this" {
   name     = "${local.project_name}-pipeline"
   role_arn = local.role_arn
@@ -68,7 +57,7 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = jsonencode(local.blue_env_vars)
+        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"blue\"}]"
       }
     }
   }
@@ -102,7 +91,7 @@ resource "aws_codepipeline" "this" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = jsonencode(local.green_env_vars)
+        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"green\"}]"
       }
     }
   }
