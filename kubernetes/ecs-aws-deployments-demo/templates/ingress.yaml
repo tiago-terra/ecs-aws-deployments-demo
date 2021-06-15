@@ -8,7 +8,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /{{ .Values.appEnv }}
+          - path: "/{{ .Values.appEnv }}"
             pathType: Prefix
             backend:
               service:
