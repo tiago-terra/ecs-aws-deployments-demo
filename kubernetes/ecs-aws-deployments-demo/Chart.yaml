@@ -1,6 +1,6 @@
 apiVersion: v2
-name: hello-class
-description: A Helm chart for Kubernetes
+name: ecs-aws-deployments-demo
+description: A demo Chart to demonstrate deployment strategies with Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
