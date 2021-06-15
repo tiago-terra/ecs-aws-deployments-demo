@@ -43,17 +43,17 @@ function kube_deploy () {
     --set port=80 \
     --debug
 
-  SERVICE_NAME="${PROJECT_NAME}-${DEPLOY_TYPE"
-  EXTERNAL_IP=$(kubectl get svc $SERVICE_NAME -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+  SERVICE_NAME="${PROJECT_NAME}-${DEPLOY_TYPE}"
+  EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   
   while [ -z $EXTERNAL_IP ]
   do
     echo "Waiting for External IP to be allocated..."
-    EXTERNAL_IP=$(kubectl get svc $SERVICE_NAME -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
+    EXTERNAL_IP=$(kubectl get svc "$SERVICE_NAME" -o 'jsonpath={..status.loadBalancer.ingress[*].hostname}')
   done
 
   echo "Waiting for $EXTERNAL_IP to be up..."
-  until $(curl --output /dev/null --silent --head --fail $EXTERNAL_IP); do
+  until $(curl --output /dev/null --silent --head --fail "$EXTERNAL_IP"); do
     printf '.'
     sleep 5
   done
