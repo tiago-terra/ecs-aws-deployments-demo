@@ -34,25 +34,25 @@ Technical use case project aimed at demonstrating different deployment strategie
 
 **1. Initializing Terraform remote state**
 
-> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/remote-state
+`terraform apply --auto-approve --chdir ./terraform/live/us-east-2/remote-state`
 
 **2. Deploy the infrastructure (including EKS cluster)**
 
-> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/infrastructure
+`terraform apply --auto-approve --chdir ./terraform/live/us-east-2/infrastructure`
 
 **3. Deploy Codebuild and Codepipeline resources**
 
-> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/pipeline
+`terraform apply --auto-approve --chdir ./terraform/live/us-east-2/pipeline`
 
 # Kubernetes
 
 For the purposes of testing the deployments, an EKS cluster is setup. Alongside, a node group is created.
 Testing the cluster is possible from the CLI. To configure kubectl connection to cluster:
 
-1. > aws login --region $AWS_REGION
-2. > aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION
+1. `aws login --region $AWS_REGION`
+2. `aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION`
 
 # TODO
 
-Canary deployments
-build build image
+- Canary deployments
+- build build image
