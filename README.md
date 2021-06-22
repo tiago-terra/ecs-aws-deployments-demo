@@ -1,16 +1,14 @@
 # AWS Deployment Strategies Use Case
 
-Technical use case project aimed at demonstrating different deployment strategies within AWS:
+Technical use case project aimed at demonstrating different deployment strategies within EKS in AWS:
 
-- Blue/Green Deployments
-- Rolling Deployments
-
-# Tools
+- Blue/Green Deployments - by triggering a CodePipeline pipeline which will deploy blue and green versions of an application to an EKS cluster, with a manual confirmation step.
+- Rolling Deployments - by triggering a CodePipeline pipeline which will update an existing application running on an EKS cluster in a rolling manner.
 
 ## Prerequisites
 
-- An IAM user account
-- The AWS credentials are setup in the user path
+- IAM access to create roles and access the different AWS services
+- A CodeCommit repo created
 
 ## Required locally
 
@@ -32,41 +30,29 @@ Technical use case project aimed at demonstrating different deployment strategie
 | S3 bucket - to store the state                           |
 | DynamoDB - to manage locks                               |
 
-# Terraform
+# Instructions
 
-## Initializing Terraform remote state
+**1. Initializing Terraform remote state**
 
-`cd terraform/cloud_init && terraform apply -auto-approve`
+> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/remote-state
 
-## Initializing terraform with backend config
+**2. Deploy the infrastructure (including EKS cluster)**
 
-- Create tfvars file from sample
-  > > cd terraform &&
-  > > mv config_sample config.tfvars
-- edit the newly created config.tfvars file
-- Initialize terraform:
-  `terraform init --backend-config=config.tfvars`
+> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/infrastructure
 
-## Inputs
+**3. Deploy Codebuild and Codepipeline resources**
 
-| Variable     | Required | Description                                  |
-| :----------- | :------- | :------------------------------------------- |
-| region       | true     | AWS region                                   |
-| user_name    | true     | Service user's name                          |
-| role_name    | true     | Service role name                            |
-| project_name | true     | Project name to be applied to resources      |
-| policies     | false    | IAM policies to apply to service users/roles |
-
-## Create infrastructure
+> terraform apply --auto-approve --chdir ./terraform/live/us-east-2/pipeline
 
 # Kubernetes
 
 For the purposes of testing the deployments, an EKS cluster is setup. Alongside, a node group is created.
 Testing the cluster is possible from the CLI. To configure kubectl connection to cluster:
-`aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME`
+
+1. > aws login --region $AWS_REGION
+2. > aws eks update-kubeconfig --cluster-name $EKS_CLUSTER_NAME --region $AWS_REGION
 
 # TODO
 
-Neither green/blue necessarily live
 Canary deployments
 build build image

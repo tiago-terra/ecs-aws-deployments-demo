@@ -1,3 +1,9 @@
+locals {
+  blue_vars    = jsonencode([{ name = "DEPLOY_TYPE", value = "blue" }])
+  green_vars   = jsonencode([{ name = "DEPLOY_TYPE", value = "green" }])
+  rolling_vars = jsonencode([{ name = "DEPLOY_TYPE", value = "rolling" }])
+}
+
 resource "aws_codepipeline" "blue_green" {
   name     = "${local.project_name}-bluegreen-pipeline"
   role_arn = local.role_arn
@@ -38,7 +44,7 @@ resource "aws_codepipeline" "blue_green" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"blue\"}]"
+        EnvironmentVariables = local.blue_vars
       }
     }
   }
@@ -73,7 +79,7 @@ resource "aws_codepipeline" "blue_green" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"green\"}]"
+        EnvironmentVariables = local.green_vars
       }
     }
   }
@@ -121,7 +127,7 @@ resource "aws_codepipeline" "rolling" {
 
       configuration = {
         ProjectName          = aws_codebuild_project.this.name
-        EnvironmentVariables = "[{\"name\":\"DEPLOY_TYPE\",\"value\":\"rolling\"}]"
+        EnvironmentVariables = local.rolling_vars
       }
     }
   }

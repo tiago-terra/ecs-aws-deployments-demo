@@ -1,11 +1,13 @@
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
 
-  cluster_name    = local.eks_cluster_name
-  cluster_version = "1.20"
-  subnets         = module.vpc.public_subnets
-  vpc_id          = module.vpc.vpc_id
-  tags            = local.tags
+  cluster_name           = local.eks_cluster_name
+  cluster_version        = "1.20"
+  subnets                = module.vpc.public_subnets
+  vpc_id                 = module.vpc.vpc_id
+  kubeconfig_output_path = "./.terraform/"
+  tags                   = local.tags
+
   map_users = [
     {
       userarn  = data.aws_caller_identity.current.arn

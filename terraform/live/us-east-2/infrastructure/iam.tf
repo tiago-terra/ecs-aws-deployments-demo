@@ -44,8 +44,14 @@ data "aws_iam_policy_document" "assume_role" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type        = "Service"
-      identifiers = formatlist("%s.amazonaws.com", ["codebuild", "codecommit", "codepipeline", "eks", "s3"])
+      type = "Service"
+      identifiers = formatlist("%s.amazonaws.com", [
+        "codebuild",
+        "codecommit",
+        "codepipeline",
+        "eks",
+        "s3"
+      ])
     }
   }
 }

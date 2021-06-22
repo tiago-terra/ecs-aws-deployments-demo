@@ -57,10 +57,6 @@ function kube_deploy () {
     printf '.'
     sleep 5
   done
-
-  if [ "$DEPLOY_TYPE" == "green" ]; then
-    helm uninstall "${PROJECT_NAME}-blue"
-  fi
 }
 
 # Main operations
